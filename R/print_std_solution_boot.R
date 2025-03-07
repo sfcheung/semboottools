@@ -84,7 +84,7 @@
 #' @author Shu Fai Cheung
 #' <https://orcid.org/0000-0002-9871-9448>
 #'
-#' @export
+#' @noRd
 
 print.std_solution_boot <- function(x,
                                     ...,

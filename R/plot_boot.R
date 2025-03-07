@@ -225,7 +225,7 @@
 #'
 #' @importFrom graphics abline hist lines
 #' @importFrom stats qqline qqnorm setNames
-#' @export
+#' @noRd
 
 plot_boot <- function(object,
                       param,

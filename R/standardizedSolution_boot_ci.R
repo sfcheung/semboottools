@@ -170,11 +170,11 @@
 #' # of a parameter
 #' plot_boot(std, param = "ab")
 #'
-#' @name standardizedSolution_boot_ci
-NULL
+# @name standardizedSolution_boot_ci
+# NULL
 
-#' @rdname standardizedSolution_boot_ci
-#' @export
+# @rdname standardizedSolution_boot_ci
+#' @noRd
 
 standardizedSolution_boot_ci <- function(object,
                                          level = .95,
@@ -352,8 +352,8 @@ boot_est_std <- function(object,
 #' # standardized 'ab'
 #' plot_boot(fit_with_boot_std, "ab", standardized = TRUE)
 #'
-#' @rdname standardizedSolution_boot_ci
-#' @export
+# @rdname standardizedSolution_boot_ci
+#' @noRd
 
 store_boot_est_std <- function(object,
                                type = "std.all",
@@ -374,8 +374,8 @@ store_boot_est_std <- function(object,
   }
 
 
-#' @rdname standardizedSolution_boot_ci
-#' @export
+# @rdname standardizedSolution_boot_ci
+#' @noRd
 
 get_boot_est_std <- function(object) {
     return(object@external$shh_boot_est_std)

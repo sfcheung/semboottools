@@ -96,11 +96,11 @@
 #' # Second, plot the distribution of the bootstrap estimates of
 #' # 'ab'
 #' plot_boot(fit_with_boot_def, "ab", standardized = FALSE)
-#' @name store_boot_def
-NULL
+# @name store_boot_def
+# NULL
 
-#' @rdname store_boot_def
-#' @export
+# @rdname store_boot_def
+#' @noRd
 
 store_boot_def <- function(object,
                            force_run = FALSE) {
@@ -115,8 +115,8 @@ store_boot_def <- function(object,
     return(object)
   }
 
-#' @rdname store_boot_def
-#' @export
+# @rdname store_boot_def
+#' @noRd
 
 get_boot_def <- function(object) {
     return(object@external$shh_boot_def)
