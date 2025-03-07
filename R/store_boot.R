@@ -136,6 +136,13 @@
 #' help page of [lavaan::bootstrapLavaan()]
 #' for details.
 #'
+#' @param keep.idx Whether the indices
+#' of cases selected in each bootstrap
+#' sample is to be stored. To be passed
+#' to the argument of the same name
+#' in [lavaan::bootstrapLavaan()].
+#' Default is `FALSE`.
+#'
 #' @param bootstrapLavaan_args A named
 #' list of additional arguments to be
 #' passed to [lavaan::bootstrapLavaan()].
@@ -192,6 +199,7 @@ store_boot <- function(object,
                        parallel = c("no", "multicore", "snow"),
                        ncpus = parallel::detectCores(logical = FALSE) - 1,
                        iseed = NULL,
+                       keep.idx = FALSE,
                        bootstrapLavaan_args = list()) {
   parallel <- match.arg(parallel)
   if (!inherits(object, "lavaan")) {
@@ -210,7 +218,7 @@ store_boot <- function(object,
                                                     parallel = parallel,
                                                     ncpus = ncpus,
                                                     iseed = iseed,
-                                                    keep.idx = TRUE))
+                                                    keep.idx = keep.idx))
     boot_ustd_out <- do.call(lavaan::bootstrapLavaan,
                              bootstrapLavaan_args1)
     object@external$sbt_boot_ustd <- boot_ustd_out
