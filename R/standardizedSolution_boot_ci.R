@@ -319,9 +319,13 @@ boot_est_std <- function(object,
     # For lavaan 0.6-13
     # Remove bootstrap replications with error
     boot_est0 <- try(lavaan::lavTech(object, "boot"), silent = TRUE)
-    if (inherits(boot_est0, "try-error")) {
+    boot_est1 <- object@external$sbt_boot_ustd
+    if (inherits(boot_est0, "try-error") && is.null(boot_est1)) {
         stop("Bootstrapping estimates not found. Was se = 'boot' or 'bootstrap'?")
       }
+    if (inherits(boot_est0, "try-error")) {
+      boot_est0 <- boot_est1
+    }
     boot_error_idx <- attr(boot_est0, "error.idx")
     if (!is.null(boot_error_idx)) {
         if (length(boot_error_idx) > 0) {
