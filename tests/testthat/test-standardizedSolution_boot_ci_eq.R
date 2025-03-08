@@ -1,15 +1,11 @@
-skip("To be revised")
-
-# skip_on_cran()
-# skip_if(!interactive(),
-#         message = "standardizedSolution_boot not tested if not interactive")
-
 library(testthat)
-library(semboottools)
+
+library(lavaan)
+
+test_that("Models with equality constraints", {
 
 # Adapted from https://lavaan.ugent.be/tutorial/syntax2.html
 
-library(lavaan)
 data(HolzingerSwineford1939)
 model <-
 "
@@ -42,11 +38,10 @@ ci_boot_bl_est <- standardizedSolution_boot(fit_bl_est)
 # bootstrapLavaan and se="boot" does not result in the same set
 # of bootstrap samples.
 
-test_that("Compare boot estimates directly", {
-    expect_equal(
-        attr(ci_boot_bl_est, "boot_est_std"),
-        boot_ci_test,
-        ignore_attr = TRUE
-      )
-  })
+expect_equal(
+  attr(ci_boot_bl_est, "boot_est_std"),
+  boot_ci_test,
+  ignore_attr = TRUE
+)
 
+})
