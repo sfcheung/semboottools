@@ -11,7 +11,9 @@
 #' done when [boot::boot()] is used
 #' because it has a `plot` method for
 #' its output. This cannot be easily
-#' done in model fitted by [lavaan::lavaan()].
+#' done in model fitted by [lavaan::lavaan()],
+#' such as [lavaan::sem()] and
+#' [lavaan::cfa()].
 #'
 #' The function [plot_boot()] is used for
 #' plotting the distribution of bootstrap
@@ -27,17 +29,17 @@
 #' and retrieves the stored estimates.
 #'
 #' For estimates of user-defined parameters,
-#' call [store_boot_def()] first to compute
+#' call [store_boot()] first to compute
 #' and store the bootstrap estimates
 #' first.
 #'
 #' For estimates in standardized solution,
 #' for both free and user-defined
-#' parameters, call [store_boot_est_std()]
+#' parameters, call [store_boot()]
 #' first to compute and store the bootstrap
 #' estimates in the standardized solution.
 #'
-#' Since Version 0.1.11.2, it can also
+#' It can also
 #' plot bootstrap estimates in the output
 #' of [standardizedSolution_boot()].
 #'
@@ -54,17 +56,16 @@
 #' (plotting the graphs).
 #'
 #' @param object Either
-#' a [lavaan::lavaan-class]
+#' a `lavaan-class`
 #' object with bootstrap estimates
 #' stored, or the output of
 #' [standardizedSolution_boot()].
 #' For standardized solution
 #' and user-defined parameters, if
-#' the object is a [lavaan::lavaan-class]
+#' the object is a `lavaan-class``
 #' object, the
 #' estimates need to be stored by
-#' [store_boot_est_std()] or
-#' [store_boot_def()].
+#' [store_boot()].
 #'
 #' @param param String. The name of
 #' the parameter to be plotted, which
@@ -75,7 +76,7 @@
 #' the estimates from the standardized
 #' solution are to be plotted. Default
 #' is `NULL`. If `object` is a
-#' [lavaan::lavaan-class] object, then
+#' `lavaan` object, then
 #' this is a required parameter
 #' and users need to explicitly set it
 #' to `TRUE` or `FALSE`. If `object` is
@@ -180,21 +181,28 @@
 #'
 #' @author Shu Fai Cheung <https://orcid.org/0000-0002-9871-9448>
 #'
-#' @seealso [lavaan::fitMeasures()], [store_boot_est_std()],
-#' and [store_boot_def()].
+#' @seealso [store_boot()]
+#' and [standardizedSolution_boot()].
 #'
 #' @examples
 #'
 #' library(lavaan)
 #'
-#' data(simple_mediation)
+#' set.seed(5478374)
+#' n <- 50
+#' x <- runif(n) - .5
+#' m <- .40 * x + rnorm(n, 0, sqrt(1 - .40))
+#' y <- .30 * m + rnorm(n, 0, sqrt(1 - .30))
+#' dat <- data.frame(x = x, y = y, m = m)
+#'
 #' mod <-
 #' "
 #' m ~ a * x
 #' y ~ b * m + x
 #' ab := a * b
 #' "
-#' fit <- sem(mod, simple_mediation,
+#' fit <- sem(mod,
+#'            data = dat,
 #'            se = "bootstrap",
 #'            bootstrap = 50,
 #'            iseed = 985714)
@@ -206,13 +214,13 @@
 #' plot_boot(fit, "a", standardized = FALSE)
 #'
 #' # For estimates of user-defined parameters,
-#' # call store_boot_def() first.
-#' fit <- store_boot_def(fit)
+#' # call store_boot() first.
+#' fit <- store_boot(fit)
 #' plot_boot(fit, "ab", standardized = FALSE)
 #'
 #' # For estimates in standardized solution,
-#' # call store_boot_est_std() first.
-#' fit <- store_boot_est_std(fit)
+#' # call store_boot() first.
+#' fit <- store_boot(fit)
 #' plot_boot(fit, "a", standardized = TRUE)
 #' plot_boot(fit, "ab", standardized = TRUE)
 #'
@@ -225,7 +233,7 @@
 #'
 #' @importFrom graphics abline hist lines par
 #' @importFrom stats qqline qqnorm setNames
-#' @noRd
+#' @export
 
 plot_boot <- function(object,
                       param,
@@ -246,7 +254,7 @@ plot_boot <- function(object,
                       qq_line_color = "black",
                       qq_line_linetype = "solid"
                       ) {
-    if (is.null(standardized) && !inherits(object, "std_solution_boot")) {
+    if (is.null(standardized) && !inherits(object, "sbt_std_boot")) {
         stop("'standardized' must be TRUE or FALSE.")
       }
     boot_out <- param_find_boot(object = object,
@@ -327,12 +335,12 @@ param_find_boot <- function(object,
                             standardized) {
     boot_t0 <- NA
     boot_t <- NA
-    is_std_solution_boot <- inherits(object, "std_solution_boot")
-    if (is_std_solution_boot) {
+    is_sbt_std_boot <- inherits(object, "sbt_std_boot")
+    if (is_sbt_std_boot) {
         standardized <- TRUE
       }
     if (standardized) {
-        if (is_std_solution_boot) {
+        if (is_sbt_std_boot) {
             coef_names <- lavaan::lav_partable_labels(object)
             boot_i <- attr(object, "boot_est_std")
             if (is.null(boot_i)) {
@@ -343,7 +351,7 @@ param_find_boot <- function(object,
             boot_i <- get_boot_est_std(object)
           }
         if (param %in% colnames(boot_i)) {
-            if (is_std_solution_boot) {
+            if (is_sbt_std_boot) {
                 i <- match(param, colnames(boot_i))
                 boot_t0 <- object[i, "est.std"]
               } else {

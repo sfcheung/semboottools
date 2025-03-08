@@ -1,5 +1,3 @@
-skip("To be revised")
-
 skip("To be run in an interactive mode")
 
 library(testthat)
@@ -11,8 +9,8 @@ library(lavaan)
 set.seed(1234)
 n <- 100
 X <- runif(n) - .5
-M <- 0.20*X + rnorm(n)
-Y <- 0.17*M + rnorm(n)
+M <- 0.20 * X + rnorm(n)
+Y <- 0.17 * M + rnorm(n)
 GP <- sample(c("GpA", "GpB"), replace = TRUE)
 Data <- data.frame(X = 10 * X, Y = Y, M = 20 * M, GP = GP)
 model <- ' # direct effect
@@ -37,22 +35,21 @@ modelgp <- ' # direct effect
              total1 := c1 + (a1*b1)
              total1 := c2 + (a2*b2)
          '
-set.seed(1234)
 # One bootstrap replication failed. Kept intentionally.
 suppressWarnings(system.time(fit <- sem(model,
-                       data = Data,
-                       se = "boot",
-                       bootstrap = 100)))
+                                        data = Data,
+                                        se = "boot",
+                                        bootstrap = 100,
+                                        iseed = 1234)))
 suppressWarnings(system.time(fitgp <- sem(modelgp,
-                       data = Data,
-                       se = "boot",
-                       group = "GP",
-                       bootstrap = 100)))
+                                          data = Data,
+                                          se = "boot",
+                                          group = "GP",
+                                          bootstrap = 100,
+                                          iseed = 1234)))
 
-fit_boot <- store_boot_def(fit)
-fit_boot <- store_boot_est_std(fit_boot)
-fitgp_boot <- store_boot_def(fitgp)
-fitgp_boot <- store_boot_est_std(fitgp_boot)
+fit_boot <- store_boot(fit)
+fitgp_boot <- store_boot(fitgp)
 
 plot_boot(fit_boot, "ab", standardized = TRUE)
 plot_boot(fit_boot, "ab", standardized = FALSE)
@@ -80,7 +77,6 @@ test_that("Expect errors", {
 
 std <- standardizedSolution_boot(fit)
 stdgp <- standardizedSolution_boot(fitgp)
-coef(fitgp)
 
 # Examine interactively
 
