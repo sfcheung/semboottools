@@ -223,7 +223,7 @@
 #' plot_boot(fit, "ab", standardized = TRUE)
 #'
 #'
-#' @importFrom graphics abline hist lines
+#' @importFrom graphics abline hist lines par
 #' @importFrom stats qqline qqnorm setNames
 #' @noRd
 
