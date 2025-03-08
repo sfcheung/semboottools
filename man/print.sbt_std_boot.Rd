@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{Object of the class
 \code{sbt_std_boot}, the output of
-\code{\link[=standardizedSolution_boot_ci]{standardizedSolution_boot_ci()}}.}
+\code{\link[=standardizedSolution_boot]{standardizedSolution_boot()}}.}
 
 \item{...}{Optional arguments to be
 passed to \code{\link[=print]{print()}} methods.}
@@ -46,7 +46,7 @@ object.}
 Print method for a
 'sbt_std_boot' object, which
 is the output of
-\code{\link[=standardizedSolution_boot_ci]{standardizedSolution_boot_ci()}}.
+\code{\link[=standardizedSolution_boot]{standardizedSolution_boot()}}.
 }
 \details{
 The default format of the printout
@@ -83,14 +83,14 @@ ab := a*b
 fit <- sem(model, data = dat, fixed.x = FALSE,
            se = "boot",
            bootstrap = 50)
-std_out <- standardizedSolution_boot_ci(fit)
+std_out <- standardizedSolution_boot(fit)
 std_out
 print(std_out, output = "text")
 print(std_out, output = "text", standardized_only = FALSE)
 
 }
 \seealso{
-\code{\link[=standardizedSolution_boot_ci]{standardizedSolution_boot_ci()}}
+\code{\link[=standardizedSolution_boot]{standardizedSolution_boot()}}
 }
 \author{
 Shu Fai Cheung

@@ -10,7 +10,7 @@
 #' # standardized 'ab'
 #' plot_boot(fit_with_boot_std, "ab", standardized = TRUE)
 #'
-# @rdname standardizedSolution_boot_ci
+# @rdname standardizedSolution_boot
 # store_boot_est_std <- function(object,
 #                                type = "std.all",
 #                                force_run = FALSE,

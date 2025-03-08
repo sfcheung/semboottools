@@ -39,7 +39,7 @@
 #'
 #' Since Version 0.1.11.2, it can also
 #' plot bootstrap estimates in the output
-#' of [standardizedSolution_boot_ci()].
+#' of [standardizedSolution_boot()].
 #'
 #' @references
 #' Rousselet, G. A., Pernet, C. R., & Wilcox, R. R. (2021).
@@ -57,7 +57,7 @@
 #' a [lavaan::lavaan-class]
 #' object with bootstrap estimates
 #' stored, or the output of
-#' [standardizedSolution_boot_ci()].
+#' [standardizedSolution_boot()].
 #' For standardized solution
 #' and user-defined parameters, if
 #' the object is a [lavaan::lavaan-class]
@@ -80,7 +80,7 @@
 #' and users need to explicitly set it
 #' to `TRUE` or `FALSE`. If `object` is
 #' the output of
-#' [standardizedSolution_boot_ci()],
+#' [standardizedSolution_boot()],
 #' then this argument is ignored (
 #' forced to be `TRUE` internally).
 #'
@@ -217,8 +217,8 @@
 #' plot_boot(fit, "ab", standardized = TRUE)
 #'
 #' # It can also plot the estimates stored
-#' # in the output of standardizedSolution_boot_ci().
-#' std_boot <- standardizedSolution_boot_ci(fit)
+#' # in the output of standardizedSolution_boot().
+#' std_boot <- standardizedSolution_boot(fit)
 #' plot_boot(std_boot, "ab")
 #' plot_boot(fit, "ab", standardized = TRUE)
 #'

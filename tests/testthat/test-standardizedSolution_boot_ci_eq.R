@@ -2,7 +2,7 @@ skip("To be revised")
 
 # skip_on_cran()
 # skip_if(!interactive(),
-#         message = "standardizedSolution_boot_ci not tested if not interactive")
+#         message = "standardizedSolution_boot not tested if not interactive")
 
 library(testthat)
 library(semboottools)
@@ -23,7 +23,7 @@ system.time(fit <- cfa(model = model,
                        data = HolzingerSwineford1939,
                        se = "boot",
                        bootstrap = 50))
-ci_boot <- standardizedSolution_boot_ci(fit,
+ci_boot <- standardizedSolution_boot(fit,
                                         save_boot_est_std = TRUE,
                                         force_run = TRUE)
 head(attr(ci_boot, "boot_est_std"))
@@ -42,7 +42,7 @@ bl_est <- bootstrapLavaan(fit2, R = 50,
                                 FUN = coef)
 fit_bl_est <- fit
 fit_bl_est@boot$coef <- bl_est
-ci_boot_bl_est <- standardizedSolution_boot_ci(fit_bl_est,
+ci_boot_bl_est <- standardizedSolution_boot(fit_bl_est,
                                         save_boot_est_std = TRUE,
                                         force_run = TRUE)
 head(attr(ci_boot_bl_est, "boot_est_std"))

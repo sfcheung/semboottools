@@ -3,7 +3,7 @@
 #' @description Print method for a
 #' 'sbt_std_boot' object, which
 #' is the output of
-#' [standardizedSolution_boot_ci()].
+#' [standardizedSolution_boot()].
 #'
 #' @details
 #' The default format of the printout
@@ -23,7 +23,7 @@
 #'
 #' @param x Object of the class
 #' `sbt_std_boot`, the output of
-#' [standardizedSolution_boot_ci()].
+#' [standardizedSolution_boot()].
 #'
 #' @param ... Optional arguments to be
 #' passed to [print()] methods.
@@ -53,7 +53,7 @@
 #' of [summary()] of a 'lavaan'-class
 #' object.
 #'
-#' @seealso [standardizedSolution_boot_ci()]
+#' @seealso [standardizedSolution_boot()]
 #'
 #' @examples
 #' library(lavaan)
@@ -74,7 +74,7 @@
 #' fit <- sem(model, data = dat, fixed.x = FALSE,
 #'            se = "boot",
 #'            bootstrap = 50)
-#' std_out <- standardizedSolution_boot_ci(fit)
+#' std_out <- standardizedSolution_boot(fit)
 #' std_out
 #' print(std_out, output = "text")
 #' print(std_out, output = "text", standardized_only = FALSE)

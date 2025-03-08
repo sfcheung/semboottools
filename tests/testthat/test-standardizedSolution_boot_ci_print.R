@@ -53,8 +53,8 @@ suppressWarnings(system.time(fit2 <- sem(model2,
                        bootstrap = 50,
                        group = "gp")))
 
-ci_boot <- standardizedSolution_boot_ci(fit, save_boot_est_std = TRUE)
-ci_boot2 <- standardizedSolution_boot_ci(fit2, save_boot_est_std = TRUE)
+ci_boot <- standardizedSolution_boot(fit, save_boot_est_std = TRUE)
+ci_boot2 <- standardizedSolution_boot(fit2, save_boot_est_std = TRUE)
 
 print(ci_boot, nd = 5)
 print(ci_boot, output = "text")

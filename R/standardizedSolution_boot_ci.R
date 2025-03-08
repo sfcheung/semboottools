@@ -7,7 +7,7 @@
 #'
 #' @details
 #'
-#' [standardizedSolution_boot_ci()]
+#' [standardizedSolution_boot()]
 #' receives a
 #' [lavaan::lavaan-class] object fitted
 #' with bootstrapping standard errors
@@ -110,7 +110,7 @@
 #'            bootstrap = 100)
 #' summary(fit)
 #'
-#' std <- standardizedSolution_boot_ci(fit)
+#' std <- standardizedSolution_boot(fit)
 #' std
 #'
 #' # Print in a friendly format with only standardized solution
@@ -124,13 +124,13 @@
 #' # of a parameter
 #' # plot_boot(std, param = "ab")
 #'
-#' @name standardizedSolution_boot_ci
+#' @name standardizedSolution_boot
 NULL
 
-#' @rdname standardizedSolution_boot_ci
+#' @rdname standardizedSolution_boot
 #' @export
 
-standardizedSolution_boot_ci <- function(object,
+standardizedSolution_boot <- function(object,
                                          level = .95,
                                          type = "std.all",
                                          boot_delta_ratio = FALSE,

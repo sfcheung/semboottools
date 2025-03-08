@@ -15,7 +15,7 @@ ab := a*b
 total := a*b + cp
 "
 
-test_that("standardizedSolution_boot_ci", {
+test_that("standardizedSolution_boot", {
 
 # Example from https://lavaan.ugent.be/tutorial/mediation.html
 
@@ -26,7 +26,7 @@ suppressWarnings(system.time(fit <- sem(model = mod,
                                         bootstrap = 100,
                                         iseed = 1234)))
 
-ci_boot <- standardizedSolution_boot_ci(fit,
+ci_boot <- standardizedSolution_boot(fit,
                                         level = .90)
 
 get_std <- function(object) {
@@ -103,9 +103,9 @@ est <- parameterEstimates(fit, boot.ci.type = "bca.simple")
 # print(est, nd = 5)
 # print(standardizedSolution(fit), nd = 5)
 
-suppressWarnings(ci_boot_bc <- standardizedSolution_boot_ci(fit,
+suppressWarnings(ci_boot_bc <- standardizedSolution_boot(fit,
                                                             boot_ci_type = "bc"))
-suppressWarnings(ci_boot_bca_simple <- standardizedSolution_boot_ci(fit,
+suppressWarnings(ci_boot_bca_simple <- standardizedSolution_boot(fit,
                                                                     boot_ci_type = "bca.simple"))
 
     expect_equal(

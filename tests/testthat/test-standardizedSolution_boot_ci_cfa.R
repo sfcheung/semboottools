@@ -2,7 +2,7 @@ skip("To be revised")
 
 # skip_on_cran()
 # skip_if(!interactive(),
-#         message = "standardizedSolution_boot_ci not tested if not interactive")
+#         message = "standardizedSolution_boot not tested if not interactive")
 
 library(testthat)
 library(semboottools)
@@ -25,7 +25,7 @@ system.time(fit <- cfa(model,
                        bootstrap = 100,
                        warn = FALSE))
 
-ci_boot <- standardizedSolution_boot_ci(fit, save_boot_est_std = TRUE)
+ci_boot <- standardizedSolution_boot(fit, save_boot_est_std = TRUE)
 
 get_std <- function(object) {
     lavaan::standardizedSolution(object)$est.std
