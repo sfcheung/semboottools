@@ -11,6 +11,7 @@ standardizedSolution_boot(
   type = "std.all",
   boot_delta_ratio = FALSE,
   boot_ci_type = c("perc", "bc", "bca.simple"),
+  save_boot_est_std = TRUE,
   ...
 )
 }
@@ -42,6 +43,13 @@ Support percentile confidence intervals
 (\code{"perc"}, the default) and
 bias-corrected confidence intervals
 (\code{"bc"} or \code{"bca.simple"}).}
+
+\item{save_boot_est_std}{Whether the
+bootstrap estimates of the
+standardized solution are saved. If
+saved, they will be stored in the
+attribute \code{boot_est_std}. Default is
+\code{TRUE}.}
 
 \item{...}{Other arguments to be
 passed to

@@ -70,6 +70,13 @@
 #' bias-corrected confidence intervals
 #' (`"bc"` or `"bca.simple"`).
 #'
+#' @param save_boot_est_std Whether the
+#' bootstrap estimates of the
+#' standardized solution are saved. If
+#' saved, they will be stored in the
+#' attribute `boot_est_std`. Default is
+#' `TRUE`.
+#'
 #' @param ... Other arguments to be
 #' passed to
 #' [lavaan::standardizedSolution()].
@@ -135,6 +142,7 @@ standardizedSolution_boot <- function(object,
                                          type = "std.all",
                                          boot_delta_ratio = FALSE,
                                          boot_ci_type = c("perc", "bc", "bca.simple"),
+                                         save_boot_est_std = TRUE,
                                          ...) {
   if (!inherits(object, "lavaan")) {
     stop("The object must be a lavaan-class object.")
@@ -195,6 +203,12 @@ standardizedSolution_boot <- function(object,
     out_final$ratio.lower <- tmp1
     out_final$ratio.upper <- tmp2
   }
+
+  if (save_boot_est_std) {
+    colnames(out_all) <- std_names(object, ...)
+    attr(out_final, "boot_est_std") <- out_all
+  }
+
   class(out_final) <- c("sbt_std_boot", class(out))
   fit_summary <- lavaan::summary(object)
   attr(out_final, "pe_attrib") <- attributes(fit_summary$pe)
