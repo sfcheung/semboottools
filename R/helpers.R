@@ -32,6 +32,7 @@ boot_est_std <- function(object,
                         object = object,
                         type = type,
                         std_args = std_args))
+    colnames(out_all) <- std_names(object)
     return(out_all)
   }
 
