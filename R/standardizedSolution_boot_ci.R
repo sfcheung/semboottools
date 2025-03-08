@@ -22,59 +22,25 @@
 #' to compute the standardized estimates
 #' in each sample.
 #'
-#' A more reliable way is to use
-#' function like
-#' [lavaan::bootstrapLavaan()].
-#' Nevertheless, this simple function is
-#' good enough for some simple scenarios,
-#' and does not require repeating
-#' the bootstrapping step.
-#'
-#' [store_boot_est_std()] computes the
-#' standardized solution for each bootstrap
-#' sample, stores them the
-#' [lavaan::lavaan-class] object, and
-#' returns it. These estimates can be used
-#' by other functions, such as [plot_boot()],
-#' to examine the
-#' estimates, without the need
-#' to repeat the computation.
-#'
-#' [get_boot_est_std()] retrieves
-#' the bootstrap estimates of the
-#' standardized solution stored by
-#' [store_boot_est_std()].
+#' Alternative, call [store_boot()] to
+#' computes and store bootstrap estimates
+#' of the standardized solution.
+#' This function will then retrieve them,
+#' even if `se` was not set to
+#' `"boot"` or `"bootstrap"` when fitting
+#' the model.
 #'
 #' @return The output of
 #' [lavaan::standardizedSolution()],
 #' with bootstrap confidence intervals
 #' appended to the right, with class
-#' set to `std_solution_boot` (since
-#' version 0.1.8.4). It has
+#' set to `sbt_std_boot`. It has
 #' a print method
-#' ([print.std_solution_boot()]) that
+#' ([print.sbt_std_boot()]) that
 #' can be used to print the standardized
 #' solution in a format similar to
 #' that of the printout of
 #' the [summary()] of a [lavaan::lavaan-class] object.
-#'
-#' [store_boot_est_std()] returns
-#' the fit object set to
-#' `object`, with the bootstrap values
-#' of standardized solution in the
-#' bootstrap samples, as a matrix,
-#' stored in the
-#' slot `external` under the name
-#' `shh_boot_est_std`.
-#'
-#' [get_boot_est_std()] returns a matrix
-#' of the stored bootstrap estimates
-#' of standardized solution. If none is
-#' stored, `NULL` is returned.
-#'
-#' [store_boot_est_std()] is usually used
-#' with diagnostic functions such
-#' as [plot_boot()].
 #'
 #' @param object A 'lavaan'-class
 #' object, fitted with 'se = "boot"'.
@@ -120,7 +86,7 @@
 #' this version.
 #'
 #'
-#' @seealso [lavaan::standardizedSolution()], [plot_boot()]
+#' @seealso [lavaan::standardizedSolution()], [store_boot()]
 #'
 #' @examples
 #'
@@ -156,13 +122,13 @@
 #'
 #' # plot_boot() can be used to examine the bootstrap estimates
 #' # of a parameter
-#' plot_boot(std, param = "ab")
+#' # plot_boot(std, param = "ab")
 #'
-# @name standardizedSolution_boot_ci
-# NULL
+#' @name standardizedSolution_boot_ci
+NULL
 
-# @rdname standardizedSolution_boot_ci
-#' @noRd
+#' @rdname standardizedSolution_boot_ci
+#' @export
 
 standardizedSolution_boot_ci <- function(object,
                                          level = .95,
@@ -186,12 +152,14 @@ standardizedSolution_boot_ci <- function(object,
     object <- store_boot(object = object,
                          type = type,
                          do_bootstrapping = FALSE)
+    out_all <- object@external$sbt_boot_std
   } else {
     if (isFALSE(type0 != type)) {
       # Stored type and type in call do not match
       object <- store_boot(object = object,
                           type = type,
                           do_bootstrapping = FALSE)
+      out_all <- object@external$sbt_boot_std
     }
   }
   out <- lavaan::standardizedSolution(object,
@@ -199,7 +167,6 @@ standardizedSolution_boot_ci <- function(object,
                                       level = level,
                                       ...)
   est_org <- out$est.std
-
   # Adapted from boot
   boot_ci <- sapply(seq_along(est_org), function(x,
                                                   boot_type = boot_ci_type) {

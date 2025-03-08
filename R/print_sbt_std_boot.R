@@ -1,7 +1,7 @@
-#' @title Print an 'std_solution_boot' Object
+#' @title Print a 'sbt_std_boot' Object
 #'
-#' @description Print method for an
-#' 'std_solution_boot' object, which
+#' @description Print method for a
+#' 'sbt_std_boot' object, which
 #' is the output of
 #' [standardizedSolution_boot_ci()].
 #'
@@ -22,7 +22,8 @@
 #' to the right of the printout.
 #'
 #' @param x Object of the class
-#' `std_solution_boot`.
+#' `sbt_std_boot`, the output of
+#' [standardizedSolution_boot_ci()].
 #'
 #' @param ... Optional arguments to be
 #' passed to [print()] methods.
@@ -84,13 +85,13 @@
 #' @author Shu Fai Cheung
 #' <https://orcid.org/0000-0002-9871-9448>
 #'
-#' @noRd
+#' @export
 
-print.std_solution_boot <- function(x,
-                                    ...,
-                                    nd = 3,
-                                    output = c("table", "text"),
-                                    standardized_only = TRUE) {
+print.sbt_std_boot <- function(x,
+                               ...,
+                               nd = 3,
+                               output = c("table", "text"),
+                               standardized_only = TRUE) {
     output <- match.arg(output)
     x_call <- attr(x, "call")
     if (output == "table") {
