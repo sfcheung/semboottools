@@ -29,14 +29,6 @@ suppressWarnings(system.time(fit <- sem(model = mod,
 ci_boot <- standardizedSolution_boot(fit,
                                         level = .90)
 
-get_std <- function(object) {
-    tmp <- lavaan::standardizedSolution(object,
-                                        se = FALSE)
-    pnames <- lavaan::lav_partable_labels(tmp)
-    out <- tmp$est.std
-    names(out) <- pnames
-    out
-  }
 fit2 <- sem(model = mod,
             data = dat,
             se = "none")
