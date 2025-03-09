@@ -9,7 +9,7 @@
 A collection of helper functions for forming bootstrapping confidence intervals and examining bootstrap estimates in structural equation modelling. Currently supports models fitted by the 'lavaan' package by Rosseel (2012) \doi{ 10.18637/jss.v048.i02}.
 }
 \author{
-\strong{Maintainer}: Wendie Yang (\href{https://orcid.org/0009-0000-8388-6481}{ORCID})
+\strong{Maintainer}: Wendie Yang \email{temp@nil.com} (\href{https://orcid.org/0009-0000-8388-6481}{ORCID})
 
 Authors:
 \itemize{

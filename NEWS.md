@@ -1,3 +1,4 @@
-# semboottools 0.0.0.9000
+# semboottools 0.0.0.9001
 
-* Initial setup.
+* Major functions finalized. Ready to
+  use. (0.0.0.9001)
