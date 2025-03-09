@@ -2,6 +2,7 @@
 
 S3method(print,sbt_std_boot)
 export(plot_boot)
+export(scatter_boot)
 export(standardizedSolution_boot)
 export(store_boot)
 importFrom(graphics,abline)

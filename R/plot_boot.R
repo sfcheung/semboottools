@@ -386,3 +386,103 @@ param_find_boot <- function(object,
                 t = boot_t)
     return(out)
   }
+
+
+#' @details
+#' The function [scatter_boot()] is
+#' used to generate a scatterplot
+#' matrix of the bootstrap estimates of
+#' two or more parameters. The function
+#' [psych::pairs.panels()] from the
+#' package `psych` is used.
+#'
+#' @param params The vector of the names of
+#' the parameters to be plotted, which
+#' should be the names as appeared in
+#' a call to `coef()`. The function
+#' [scatter_boot()] requires two or more
+#' parameters selected by this argument.
+#'
+#' @param main The title of the
+#' scatterplot matrix. Default is
+#' `"Bootstrap Estimates"`.
+#'
+#' @param ... Arguments to be passed to
+#' [psych::pairs.panels()]. Please refer
+#' to the help page of [psych::pairs.panels()]
+#' for arguments to customize the
+#' plot.
+#'
+#' @examples
+#'
+#' # Scatterplot matrix of bootstrap estimates for
+#' # two or more free parameters
+#' scatter_boot(fit, c("a", "b", "ab"), standardized = FALSE)
+#'
+#' # Can include user-defined parameters in
+#' # scatterplot matrix, if their bootstrap
+#' # estimates have been stored
+#' scatter_boot(fit, c("ab", "a", "b"), standardized = FALSE)
+#'
+#' # scatter_boot also supports the
+#' # standardized solution
+#' scatter_boot(fit, c("a", "b", "ab"), standardized = TRUE)
+#'
+#' @rdname plot_boot
+#' @export
+
+scatter_boot <- function(object,
+                         params,
+                         standardized = NULL,
+                         main = "Bootstrap Estimates",
+                         ...) {
+  if (is.null(standardized) && !inherits(object, "sbt_std_boot")) {
+    stop("'standardized' must be TRUE or FALSE.")
+  }
+  if (length(params) < 2) {
+    stop("Need to select two or more parameters.")
+  }
+  boot_out_list <- sapply(params,
+                          param_find_boot,
+                          object = object,
+                          standardized = standardized,
+                          simplify = FALSE,
+                          USE.NAMES = TRUE)
+
+  if (any(sapply(boot_out_list, is.na))) {
+    if (standardized) {
+      stop("Bootstrap standardized estimates not found or not stored. ",
+            "Please call 'store_boot_est_std()' first if ",
+            "bootstrapping has been requested.")
+    } else {
+      stop("Bootstrap estimates not found or not stored.")
+    }
+  }
+
+  t0_tmp <- sapply(boot_out_list,
+                   function(x) x$t0,
+                   simplify = TRUE,
+                   USE.NAMES = TRUE)
+  names(t0_tmp) <- names(boot_out_list)
+  t_tmp <- sapply(boot_out_list,
+                  function(x) x$t,
+                  simplify = TRUE,
+                  USE.NAMES = TRUE)
+  colnames(t_tmp) <- names(boot_out_list)
+  boot_out <- list(t0 = t0_tmp,
+                   t = t_tmp)
+
+  # # Probably no need for this check
+  # tmp <- range(t)
+  # tmp <- tmp[2] - tmp[1]
+  # if (tmp == 0) {
+  #   stop("Identical estimates in all bootstrap samples.")
+  # }
+
+  psych::pairs.panels(boot_out$t,
+                      main = main,
+                      ...)
+
+  invisible(object)
+}
+

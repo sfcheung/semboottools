@@ -2,6 +2,7 @@
 % Please edit documentation in R/plot_boot.R
 \name{plot_boot}
 \alias{plot_boot}
+\alias{scatter_boot}
 \title{Diagnostic Plots of Bootstrap Estimates in 'lavaan'}
 \usage{
 plot_boot(
@@ -23,6 +24,14 @@ plot_boot(
   qq_line_linewidth = 2,
   qq_line_color = "black",
   qq_line_linetype = "solid"
+)
+
+scatter_boot(
+  object,
+  params,
+  standardized = NULL,
+  main = "Bootstrap Estimates",
+  ...
 )
 }
 \arguments{
@@ -149,6 +158,23 @@ Default is \code{"black"}.}
 \item{qq_line_linetype}{The type of
 the diagonal line to be drawn in the
 normal QQ-plot. Default is \code{"solid"}.}
+
+\item{params}{The vector of the names of
+the parameters to be plotted, which
+should be the names as appeared in
+a call to \code{coef()}. The function
+\code{\link[=scatter_boot]{scatter_boot()}} requires two or more
+parameters selected by this argument.}
+
+\item{main}{The title of the
+scatterplot matrix. Default is
+\code{"Bootstrap Estimates"}.}
+
+\item{...}{Arguments to be passed to
+\code{\link[psych:pairs.panels]{psych::pairs.panels()}}. Please refer
+to the help page of \code{\link[psych:pairs.panels]{psych::pairs.panels()}}
+for arguments to customize the
+plot.}
 }
 \value{
 Return the original
@@ -200,6 +226,13 @@ estimates in the standardized solution.
 It can also
 plot bootstrap estimates in the output
 of \code{\link[=standardizedSolution_boot]{standardizedSolution_boot()}}.
+
+The function \code{\link[=scatter_boot]{scatter_boot()}} is
+used to generate a scatterplot
+matrix of the bootstrap estimates of
+two or more parameters. The function
+\code{\link[psych:pairs.panels]{psych::pairs.panels()}} from the
+package \code{psych} is used.
 }
 \examples{
 
@@ -247,6 +280,20 @@ std_boot <- standardizedSolution_boot(fit)
 plot_boot(std_boot, "ab")
 plot_boot(fit, "ab", standardized = TRUE)
 
+
+
+# Scatterplot matrix of bootstrap estimates for
+# two or more free parameters
+scatter_boot(fit, c("a", "b", "ab"), standardized = FALSE)
+
+# Can include user-defined parameters in
+# scatterplot matrix, if their bootstrap
+# estimates have been stored
+scatter_boot(fit, c("ab", "a", "b"), standardized = FALSE)
+
+# scatter_boot also supports the
+# standardized solution
+scatter_boot(fit, c("a", "b", "ab"), standardized = TRUE)
 
 }
 \references{
