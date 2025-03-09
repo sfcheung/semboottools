@@ -41,17 +41,17 @@ model2 <- ' # direct effect
 suppressWarnings(system.time(fit <- sem(model,
                                         data = Data,
                                         se = "boot",
-                                        bootstrap = 50,
+                                        bootstrap = 200,
                                         iseed = 1234)))
 suppressWarnings(system.time(fit2 <- sem(model2,
                                          data = Data,
                                          se = "boot",
-                                         bootstrap = 50,
+                                         bootstrap = 200,
                                          group = "gp",
                                          iseed = 1234)))
 
-ci_boot <- standardizedSolution_boot(fit)
-ci_boot2 <- standardizedSolution_boot(fit2)
+ci_boot <- standardizedSolution_boot(fit, boot_pvalue_min_size = 199)
+ci_boot2 <- standardizedSolution_boot(fit2, boot_pvalue_min_size = 200)
 
 print(ci_boot, nd = 5)
 print(ci_boot, output = "text")

@@ -12,6 +12,8 @@ standardizedSolution_boot(
   boot_delta_ratio = FALSE,
   boot_ci_type = c("perc", "bc", "bca.simple"),
   save_boot_est_std = TRUE,
+  boot_pvalue = TRUE,
+  boot_pvalue_min_size = 1000,
   ...
 )
 }
@@ -50,6 +52,20 @@ standardized solution are saved. If
 saved, they will be stored in the
 attribute \code{boot_est_std}. Default is
 \code{TRUE}.}
+
+\item{boot_pvalue}{Whether asymmetric
+bootstrap \emph{p}-values are computed.
+Default is \code{TRUE}.}
+
+\item{boot_pvalue_min_size}{Integer.
+The asymmetric bootstrap \emph{p}-values
+will be computed only if the number
+of valid bootstrap estimates is at
+least this value. Otherwise, \code{NA}
+will be returned. If the number of
+valid bootstrap samples is less than
+this value, then \code{boot_pvalue} will
+be set to \code{FALSE}.}
 
 \item{...}{Other arguments to be
 passed to
@@ -96,6 +112,29 @@ This function will then retrieve them,
 even if \code{se} was not set to
 \code{"boot"} or \code{"bootstrap"} when fitting
 the model.
+\subsection{Bootstrap Confidence Intervals}{
+
+It supports percentile and
+bias-corrected bootstrap confidence
+intervals.
+}
+
+\subsection{Bootstrap Standard Errors}{
+
+The standard errors are the
+standard deviation of the bootstrap
+estimates, which can be different from
+the delta-method standard errors.
+}
+
+\subsection{Bootstrap Asymmetric \emph{p}-Values}{
+
+If percentile bootstrap confidence
+interval is requested, asymmetric
+bootstrap \emph{p}-values are also
+computed, using the method presented
+in Asparouhov and Muthén (2021).
+}
 }
 \examples{
 
@@ -137,6 +176,10 @@ hist_qq_boot(std, param = "ab")
 # of two or more parameters
 scatter_boot(std, params = c("ab", "a", "b"))
 
+}
+\references{
+Asparouhov, A., & Muthén, B. (2021). Bootstrap p-value computation.
+Retrieved from https://www.statmodel.com/download/FAQ-Bootstrap\%20-\%20Pvalue.pdf
 }
 \seealso{
 \code{\link[lavaan:standardizedSolution]{lavaan::standardizedSolution()}}, \code{\link[=store_boot]{store_boot()}}

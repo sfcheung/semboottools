@@ -27,7 +27,8 @@ suppressWarnings(system.time(fit <- sem(model = mod,
                                         iseed = 1234)))
 
 ci_boot <- standardizedSolution_boot(fit,
-                                     level = .90)
+                                     level = .90,
+                                     boot_pvalue_min_size = 50)
 
 fit2 <- sem(model = mod,
             data = dat,

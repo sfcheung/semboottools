@@ -187,8 +187,6 @@
 #'
 #' fit <- store_boot(fit)
 #'
-#' # TODO: Add other calls
-#'
 #' @export
 
 store_boot <- function(object,
