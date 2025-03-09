@@ -30,6 +30,27 @@
 #' `"boot"` or `"bootstrap"` when fitting
 #' the model.
 #'
+#' ## Bootstrap Confidence Intervals
+#'
+#' It supports percentile and
+#' bias-corrected bootstrap confidence
+#' intervals.
+#'
+#' ## Bootstrap Standard Errors
+#'
+#' The standard errors are the
+#' standard deviation of the bootstrap
+#' estimates, which can be different from
+#' the delta-method standard errors.
+#'
+#' ## Bootstrap Asymmetric *p*-Values
+#'
+#' If percentile bootstrap confidence
+#' interval is requested, asymmetric
+#' bootstrap *p*-values are also
+#' computed, using the method presented
+#' in Asparouhov and Muthén (2021).
+#'
 #' @return The output of
 #' [lavaan::standardizedSolution()],
 #' with bootstrap confidence intervals
@@ -77,6 +98,20 @@
 #' attribute `boot_est_std`. Default is
 #' `TRUE`.
 #'
+#' @param boot_pvalue Whether asymmetric
+#' bootstrap *p*-values are computed.
+#' Default is `TRUE`.
+#'
+#' @param boot_pvalue_min_size Integer.
+#' The asymmetric bootstrap *p*-values
+#' will be computed only if the number
+#' of valid bootstrap estimates is at
+#' least this value. Otherwise, `NA`
+#' will be returned. If the number of
+#' valid bootstrap samples is less than
+#' this value, then `boot_pvalue` will
+#' be set to `FALSE`.
+#'
 #' @param ... Other arguments to be
 #' passed to
 #' [lavaan::standardizedSolution()].
@@ -92,6 +127,9 @@
 #' percentile confidence intervals in
 #' this version.
 #'
+#' @references
+#' Asparouhov, A., & Muthén, B. (2021). Bootstrap p-value computation.
+#' Retrieved from https://www.statmodel.com/download/FAQ-Bootstrap%20-%20Pvalue.pdf
 #'
 #' @seealso [lavaan::standardizedSolution()], [store_boot()]
 #'
@@ -147,7 +185,10 @@ standardizedSolution_boot <- function(object,
                                          boot_delta_ratio = FALSE,
                                          boot_ci_type = c("perc", "bc", "bca.simple"),
                                          save_boot_est_std = TRUE,
+                                         boot_pvalue = TRUE,
+                                         boot_pvalue_min_size = 1000,
                                          ...) {
+  boot_ci_type <- match.arg(boot_ci_type)
   if (!inherits(object, "lavaan")) {
     stop("The object must be a lavaan-class object.")
   }
@@ -196,7 +237,42 @@ standardizedSolution_boot <- function(object,
   boot_se <- apply(out_all, 2, stats::sd, na.rm = TRUE, simplify = TRUE)
   # Parameters with SE == NA are assumed to be fixed parameters
   boot_se[boot_se < .Machine$double.eps] <- NA
-  out_final <- cbind(out, boot_ci, `boot.se` = boot_se)
+  if (boot_ci_type != "perc") {
+    # Asymmetric p-values computed only if percentile CIs are requested
+    boot_pvalue <- FALSE
+  }
+  tmp <- nrow(out_all)
+  if ((tmp < boot_pvalue_min_size) && boot_pvalue) {
+    # Asymmetric p-values not computed because the number of bootstrap samples
+    # is less than boot_pvalue_min_size
+    tmp1 <- paste0("The number of bootstrap samples (%1$d) ",
+                   "is less than 'boot_pvalue_min_size' (%2$d). ",
+                   "Bootstrap p-values are not computed.")
+    tmp2 <- sprintf(tmp1, tmp, boot_pvalue_min_size)
+    warning(tmp2)
+    boot_pvalue <- FALSE
+  }
+  if (boot_pvalue) {
+    boot_p <- sapply(seq_along(est_org), function(x) {
+                          if (isTRUE(all.equal(stats::var(out_all[, x], na.rm = TRUE), 0)) ||
+                              all(is.na(out_all[, x]))) {
+                              return(c(NA))
+                            }
+                          est2p(x = out_all[, x],
+                                h0 = 0,
+                                min_size = boot_pvalue_min_size,
+                                warn = FALSE)
+                        })
+  } else {
+    boot_p <- NULL
+  }
+  out_final <- cbind(out,
+                     boot_ci,
+                     `boot.se` = boot_se)
+  if (boot_pvalue) {
+    out_final <- cbind(out_final,
+                       `boot.p` = boot_p)
+  }
   if (boot_delta_ratio) {
     tmp1 <- abs(out_final$boot.ci.lower - out_final$est.std) /
                               abs(out_final$ci.lower - out_final$est.std)
@@ -220,6 +296,7 @@ standardizedSolution_boot <- function(object,
   attr(out_final, "est") <- lavaan::parameterEstimates(object)
   attr(out_final, "level") <- level
   attr(out_final, "type") <- type
+  attr(out_final, "boot_ci_type") <- boot_ci_type
   attr(out_final, "call") <- match.call()
   out_final
 }

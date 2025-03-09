@@ -4,7 +4,7 @@
 \alias{print.sbt_std_boot}
 \title{Print a 'sbt_std_boot' Object}
 \usage{
-\method{print}{sbt_std_boot}(x, ..., nd = 3, output = c("table", "text"), standardized_only = TRUE)
+\method{print}{sbt_std_boot}(x, ..., nd = 3, output = c("text", "table"), standardized_only = TRUE)
 }
 \arguments{
 \item{x}{Object of the class
@@ -19,15 +19,17 @@ after the decimal place. Default
 is 3.}
 
 \item{output}{String. How the results
-are printed. Default is \code{"table"} and
+are printed. If set to \code{"table"},
 the results are printed in a table
 format similar to that of
 \code{\link[lavaan:standardizedSolution]{lavaan::standardizedSolution()}}.
-If \code{"text"}, the results will be
+If set to \code{"text"}, the results will be
 printed in a text format similar to
 the printout of the output of
 \code{\link[=summary]{summary()}} of
-a 'lavaan'-class object.}
+a 'lavaan'-class object. Unlike
+\code{\link[lavaan:standardizedSolution]{lavaan::standardizedSolution()}},
+the default is \code{"text"}.}
 
 \item{standardized_only}{Logical.
 If \code{TRUE}, the default, only the
@@ -85,8 +87,8 @@ fit <- sem(model, data = dat, fixed.x = FALSE,
            bootstrap = 50)
 std_out <- standardizedSolution_boot(fit)
 std_out
-print(std_out, output = "text")
-print(std_out, output = "text", standardized_only = FALSE)
+print(std_out)
+print(std_out, standardized_only = FALSE)
 
 }
 \seealso{

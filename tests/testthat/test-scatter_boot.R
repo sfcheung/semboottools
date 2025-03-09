@@ -71,8 +71,8 @@ test_that("Expect errors", {
 
 # Support standardizedSolution_boot()
 
-std <- standardizedSolution_boot(fit)
-stdgp <- standardizedSolution_boot(fitgp)
+suppressWarnings(std <- standardizedSolution_boot(fit))
+suppressWarnings(stdgp <- standardizedSolution_boot(fitgp))
 
 # Examine interactively
 
