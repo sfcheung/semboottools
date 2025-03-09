@@ -100,14 +100,14 @@ boot_def <- function(object) {
 }
 
 # Called by:
-# - plot_boot()
+# - hist_qq_boot()
 
 get_boot_est_std <- function(object) {
   return(object@external$sbt_boot_std)
 }
 
 # Called by:
-# - plot_boot()
+# - hist_qq_boot()
 
 get_boot_def <- function(object) {
     return(object@external$sbt_boot_def)
@@ -115,7 +115,7 @@ get_boot_def <- function(object) {
 
 # Generate names for standardized solution
 # Called by:
-# - plot_boot()
+# - hist_qq_boot()
 
 std_names <- function(object, ...) {
   std <- lavaan::standardizedSolution(object, se = FALSE, ...)
