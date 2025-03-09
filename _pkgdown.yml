@@ -1,4 +1,61 @@
+# url: https://Yangzhen1999.github.io/semboottools/
+
 url: ~
+
 template:
   bootstrap: 5
+  bootswatch: simplex
+  theme: a11y-light
+  bslib:
+    pkgdown-nav-height: 100px
+    bg: "#EFEFEF"
+    fg: "#000000"
+    # primary: "#0051A8"
+    link-color: "#0000A0"
+    base_font: {google: "Cabin"}
+    heading_font: {google: "Cabin"}
+    code_font: {google: "Cousine"}
+figures:
+  fig.width: 6
+  fig.height: 4
+  fig.asp: 0.75
 
+navbar:
+  bg: primary
+  structure:
+    left:  [intro, articles, reference, tutorials, news]
+    right: [search, github]
+#  components:
+#    articles:
+#      text: Articles
+#      menu:
+#      - text: "<Section Title>"
+#      - text: Title
+#        href: articles/doc1.html
+#      - text: Title
+#        href: articles/doc2.html
+#      - text: -------
+#      - text: "<Section Title>"
+#      - text: Title
+#        href: articles/doc3.html
+#      - text: Title
+#        href: articles/doc4.html
+
+reference:
+- title: Main Functions
+  desc:  >
+    Main functions for bootstrapping.
+- contents:
+  - standardizedSolution_boot
+  - store_boot
+  - print.sbt_std_boot
+- title: Diagnostics Functions
+  desc:  >
+    For visualizing the distribution of
+    the bootstrap estimates.
+- contents:
+  - hist_qq_boot
+# - title: Datasets
+#   desc: Datasets used in examples.
+# - contents:
+#   - has_keyword("datasets")

@@ -15,7 +15,7 @@
 #' such as [lavaan::sem()] and
 #' [lavaan::cfa()].
 #'
-#' The function [plot_boot()] is used for
+#' The function [hist_qq_boot()] is used for
 #' plotting the distribution of bootstrap
 #' estimates for a model fitted by
 #' `lavaan` in a format similar to that
@@ -211,31 +211,31 @@
 #' # free parameters directly
 #' # Note that 'standardized' must be always be set to
 #' # either TRUE or FALSE. No default value.
-#' plot_boot(fit, "a", standardized = FALSE)
+#' hist_qq_boot(fit, "a", standardized = FALSE)
 #'
 #' # For estimates of user-defined parameters,
 #' # call store_boot() first.
 #' fit <- store_boot(fit)
-#' plot_boot(fit, "ab", standardized = FALSE)
+#' hist_qq_boot(fit, "ab", standardized = FALSE)
 #'
 #' # For estimates in standardized solution,
 #' # call store_boot() first.
 #' fit <- store_boot(fit)
-#' plot_boot(fit, "a", standardized = TRUE)
-#' plot_boot(fit, "ab", standardized = TRUE)
+#' hist_qq_boot(fit, "a", standardized = TRUE)
+#' hist_qq_boot(fit, "ab", standardized = TRUE)
 #'
 #' # It can also plot the estimates stored
 #' # in the output of standardizedSolution_boot().
 #' std_boot <- standardizedSolution_boot(fit)
-#' plot_boot(std_boot, "ab")
-#' plot_boot(fit, "ab", standardized = TRUE)
+#' hist_qq_boot(std_boot, "ab")
+#' hist_qq_boot(fit, "ab", standardized = TRUE)
 #'
 #'
 #' @importFrom graphics abline hist lines par
 #' @importFrom stats qqline qqnorm setNames
 #' @export
 
-plot_boot <- function(object,
+hist_qq_boot <- function(object,
                       param,
                       standardized = NULL,
                       nclass = NULL,
@@ -428,7 +428,7 @@ param_find_boot <- function(object,
 #' # standardized solution
 #' scatter_boot(fit, c("a", "b", "ab"), standardized = TRUE)
 #'
-#' @rdname plot_boot
+#' @rdname hist_qq_boot
 #' @export
 
 scatter_boot <- function(object,

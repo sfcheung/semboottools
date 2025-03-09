@@ -129,9 +129,9 @@ print(std, output = "text")
 # and standardized solution
 print(std, output = "text", standardized_only = FALSE)
 
-# plot_boot() can be used to examine the bootstrap estimates
+# hist_qq_boot() can be used to examine the bootstrap estimates
 # of a parameter
-plot_boot(std, param = "ab")
+hist_qq_boot(std, param = "ab")
 
 # scatter_boot() can be used to examine the bootstrap estimates
 # of two or more parameters
