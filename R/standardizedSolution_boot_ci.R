@@ -129,7 +129,11 @@
 #'
 #' # plot_boot() can be used to examine the bootstrap estimates
 #' # of a parameter
-#' # plot_boot(std, param = "ab")
+#' plot_boot(std, param = "ab")
+#'
+#' # scatter_boot() can be used to examine the bootstrap estimates
+#' # of two or more parameters
+#' scatter_boot(std, params = c("ab", "a", "b"))
 #'
 #' @name standardizedSolution_boot
 NULL
