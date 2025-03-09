@@ -20,7 +20,8 @@ system.time(fit <- cfa(model,
                        iseed = 1234,
                        warn = FALSE))
 
-ci_boot <- standardizedSolution_boot(fit)
+ci_boot <- standardizedSolution_boot(fit,
+                                     boot_pvalue_min_size = 50)
 
 fit2 <- cfa(model,
             data = HolzingerSwineford1939,
