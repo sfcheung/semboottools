@@ -254,77 +254,77 @@ plot_boot <- function(object,
                       qq_line_color = "black",
                       qq_line_linetype = "solid"
                       ) {
-    if (is.null(standardized) && !inherits(object, "sbt_std_boot")) {
-        stop("'standardized' must be TRUE or FALSE.")
-      }
-    boot_out <- param_find_boot(object = object,
-                                param = param,
-                                standardized = standardized)
-    if (any(is.na(boot_out))) {
-        if (standardized) {
-            stop("Bootstrap standardized estimates not found or not stored. ",
-                 "Please call 'store_boot_est_std()' first if ",
-                 "bootstrapping has been requested.")
-          } else {
-            stop("Bootstrap estimates not found or not stored.")
-          }
-      }
-    t0 <- boot_out$t0
-    t <- boot_out$t
-    tmp <- range(t)
-    tmp <- tmp[2] - tmp[1]
-    if (tmp == 0) {
-        stop("Identical estimates in all bootstrap samples.")
-      }
-    # From plot.boot()
-    if (is.null(nclass)) {
-        nclass <- min(max(ceiling(length(t) / 25), 10), 100)
-      }
-    # From plot.boot()
-    #  Calculate the breakpoints for the histogram so that one of them is
-    #  exactly t0.
-    rg <- range(t)
-    rg[1] <- min(rg[1], t0)
-    rg[2] <- max(rg[2], t0)
-    rg <- rg + 0.05 * c(-1, 1) * diff(rg)
-    lc <- diff(rg) / (nclass - 2)
-    n1 <- ceiling((t0 - rg[1]) / lc)
-    n2 <- ceiling((rg[2] - t0) / lc)
-    bks <- t0 + (-n1:n2) * lc
-    parold <- par(mfrow = c(1, 2))
-    parold2 <- par(lwd = hist_linewidth)
-    hist(t,
-         probability = TRUE,
-         breaks = bks,
-         col = hist_color,
-         main = paste0("Histogram of ",
-                       param),
-         xlab = param,
-         ylab = "Density")
-    par(parold2)
-    lines(stats::density(t),
-          lwd = density_line_linewidth,
-          col = density_line_color,
-          lty = density_line_type)
-    abline(v = t0,
-           lwd = est_line_linewidth,
-           col = est_line_color,
-           lty = est_line_type)
-    qqnorm(t,
-           cex = qq_dot_size,
-           col = qq_dot_color,
-           pch = qq_dot_pch,
-           main = paste0("Normal QQ-Plot of ",
-                  param),
-           xlab = "Quantiles of Standard Normal",
-           ylab = param)
-    qqline(t,
-           lwd = qq_line_linewidth,
-           col = qq_line_color,
-           lty = qq_line_linetype)
-    par(parold)
-    invisible(object)
+  if (is.null(standardized) && !inherits(object, "sbt_std_boot")) {
+    stop("'standardized' must be TRUE or FALSE.")
   }
+  boot_out <- param_find_boot(object = object,
+                              param = param,
+                              standardized = standardized)
+  if (any(is.na(boot_out))) {
+    if (standardized) {
+      stop("Bootstrap standardized estimates not found or not stored. ",
+            "Please call 'store_boot_est_std()' first if ",
+            "bootstrapping has been requested.")
+    } else {
+      stop("Bootstrap estimates not found or not stored.")
+    }
+  }
+  t0 <- boot_out$t0
+  t <- boot_out$t
+  tmp <- range(t)
+  tmp <- tmp[2] - tmp[1]
+  if (tmp == 0) {
+    stop("Identical estimates in all bootstrap samples.")
+  }
+  # From plot.boot()
+  if (is.null(nclass)) {
+    nclass <- min(max(ceiling(length(t) / 25), 10), 100)
+  }
+  # From plot.boot()
+  #  Calculate the breakpoints for the histogram so that one of them is
+  #  exactly t0.
+  rg <- range(t)
+  rg[1] <- min(rg[1], t0)
+  rg[2] <- max(rg[2], t0)
+  rg <- rg + 0.05 * c(-1, 1) * diff(rg)
+  lc <- diff(rg) / (nclass - 2)
+  n1 <- ceiling((t0 - rg[1]) / lc)
+  n2 <- ceiling((rg[2] - t0) / lc)
+  bks <- t0 + (-n1:n2) * lc
+  parold <- par(mfrow = c(1, 2))
+  parold2 <- par(lwd = hist_linewidth)
+  hist(t,
+       probability = TRUE,
+       breaks = bks,
+       col = hist_color,
+       main = paste0("Histogram of ",
+                     param),
+       xlab = param,
+       ylab = "Density")
+  par(parold2)
+  lines(stats::density(t),
+        lwd = density_line_linewidth,
+        col = density_line_color,
+        lty = density_line_type)
+  abline(v = t0,
+          lwd = est_line_linewidth,
+          col = est_line_color,
+          lty = est_line_type)
+  qqnorm(t,
+          cex = qq_dot_size,
+          col = qq_dot_color,
+          pch = qq_dot_pch,
+          main = paste0("Normal QQ-Plot of ",
+                param),
+          xlab = "Quantiles of Standard Normal",
+          ylab = param)
+  qqline(t,
+          lwd = qq_line_linewidth,
+          col = qq_line_color,
+          lty = qq_line_linetype)
+  par(parold)
+  invisible(object)
+}
 
 
 # Find and return the stored bootstrap estimates,if available.
