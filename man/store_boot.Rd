@@ -192,8 +192,6 @@ summary(fit)
 
 fit <- store_boot(fit)
 
-# TODO: Add other calls
-
 }
 \author{
 Shu Fai Cheung
