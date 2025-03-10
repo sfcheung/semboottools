@@ -1,4 +1,4 @@
-# semboottools 0.0.0.9004
+# semboottools 0.0.0.9005
 
 * Major functions finalized. Ready to
   use. (0.0.0.9001)
@@ -16,6 +16,9 @@
   Enabled by default.
   (0.0.0.9004)
 
-* Change the default output format
+* Changed the default output format
   of `print.sbt_std_boot()` to `"text"`.
   (0.0.0.9004)
+
+* Updated the maintainer email address.
+  (0.0.0.9005)
