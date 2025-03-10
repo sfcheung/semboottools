@@ -77,88 +77,90 @@
 print.sbt_ustd_boot <- function(x,
                                 ...,
                                 nd = 3,
-                                output = c("text", "table")) {
-    output <- match.arg(output)
-    x_call <- attr(x, "call")
-    if (output == "table") {
-        NextMethod()
-        return(invisible(x))
-      }
-    ptable <- attr(x, "partable")
-    est0 <- x
-    class(est0) <- class(est0)[-which(class(est0) == "sbt_ustd_boot")]
-    est1 <- est0
-    est1$id <- seq_len(nrow(est1))
-    # i0 <- colnames(x) %in% c("se", "z", "pvalue",
-    #                          "ci.lower", "ci.upper")
-    # est1 <- merge(est1,
-    #               x[, !i0])
-    i0 <- colnames(ptable) %in% c("est", "se",
-                                  "user", "free",
-                                  "ustart", "plabel",
-                                  "start",
-                                  "id")
-    est1 <- merge(est1, ptable[, !i0])
-    est1 <- est1[order(est1$id), ]
-    est1$id <- NULL
-    class(est1) <- class(est0)
-    pe_attrib <- attr(x, "pe_attrib")
-    tmp <- !(names(pe_attrib) %in% names(attributes(est1)))
-    attributes(est1) <- c(attributes(est1),
-                          pe_attrib[tmp])
-    class(est1) <- c("lavaan.parameterEstimates", class(est1))
-    if (FALSE) {
-        # Not used. To be deleted.
-        # tmp <- colnames(est1)
-        # tmp[tmp == "est.std"] <- "Standardized"
-        # tmp[tmp == "boot.ci.lower"] <- "ci.std.lower"
-        # tmp[tmp == "boot.ci.upper"] <- "ci.std.upper"
-        # tmp[tmp == "boot.se"] <- "Std.Err.std"
-        # tmp[tmp == "boot.p"] <- "pvalue.std"
-        # colnames(est1) <- tmp
-        # print(est1, ..., nd = nd)
-        # return(invisible(x))
-      } else {
-        level <- attr(x, "level")
-        est2 <- est1
-        out <- utils::capture.output(print(est2, nd = nd))
-        i <- grepl("  Standard errors  ", out, fixed = TRUE)
-        j <- nchar(out[i])
-
-        st1 <- "  Bootstrap Confidence Interval:"
-        tmp <- "  - Confidence Level"
-        tmp2 <- paste0(formatC(level * 100, digits = 1, format = "f"),
-                       "%")
-        st2 <- paste0(tmp,
-                      paste0(rep(" ", j - nchar(tmp) - nchar(tmp2)),
-                             collapse = ""),
-                      tmp2)
-        tmp <- "  - Bootstrap CI Type"
-        tmp2 <- switch(attr(x, "boot_ci_type"),
-                       perc = "Percentile",
-                       bc = "Bias-Corrected",
-                       bca.simple = "Bias-Corrected")
-        st2b <- paste0(tmp,
-                       paste0(rep(" ", j - nchar(tmp) - nchar(tmp2)),
-                              collapse = ""),
-                       tmp2)
-        if (!is.null(est2$boot.p)) {
-          tmp <- "  - Bootstrap P-Value"
-          tmp2 <- "Asymmetric P-Value"
-          st2c <- paste0(tmp,
-                        paste0(rep(" ", j - nchar(tmp) - nchar(tmp2)),
-                                collapse = ""),
-                        tmp2)
-        } else {
-          st2c <- NULL
-        }
-        out <- c(out[seq_len(which(i))],
-                 st1,
-                 st2,
-                 st2b,
-                 st2c,
-                 out[-seq_len(which(i))])
-        cat(out, sep = "\n")
-        return(invisible(x))
-      }
+                                output = c("lavaan.printer", "text", "table")) {
+  output <- match.arg(output)
+  x_call <- attr(x, "call")
+  if (output == "table") {
+    NextMethod()
+    return(invisible(x))
   }
+  ptable <- attr(x, "partable")
+  est0 <- x
+  class(est0) <- class(est0)[-which(class(est0) == "sbt_ustd_boot")]
+  est1 <- est0
+  est1$id <- seq_len(nrow(est1))
+  # i0 <- colnames(x) %in% c("se", "z", "pvalue",
+  #                          "ci.lower", "ci.upper")
+  # est1 <- merge(est1,
+  #               x[, !i0])
+  i0 <- colnames(ptable) %in% c("est", "se",
+                                "user", "free",
+                                "ustart", "plabel",
+                                "start",
+                                "id")
+  est1 <- merge(est1, ptable[, !i0])
+  est1 <- est1[order(est1$id), ]
+  est1$id <- NULL
+  class(est1) <- class(est0)
+  pe_attrib <- attr(x, "pe_attrib")
+  tmp <- !(names(pe_attrib) %in% names(attributes(est1)))
+  attributes(est1) <- c(attributes(est1),
+                        pe_attrib[tmp])
+  class(est1) <- c("lavaan.parameterEstimates", class(est1))
+  if (output == "lavaan.printer") {
+    # TODO:
+    # - Add annotation
+    est2 <- lavaan.printer::parameterEstimates_table_list(est1,
+                      rename_cols = c("P(>|z|)" = "p",
+                                      "S.E." = "SE",
+                                      "boot.ci.lower" = "bCI.Lo",
+                                      "boot.ci.upper" = "bCI.Up",
+                                      "boot.se" = "bSE",
+                                      "boot.p" = "bp"))
+    lavaan.printer::print_parameterEstimates_table_list(est2,
+                                                        nd = nd,
+                                                        drop = "Z")
+  } else {
+    level <- attr(x, "level")
+    est2 <- est1
+    out <- utils::capture.output(print(est2, nd = nd))
+    i <- grepl("  Standard errors  ", out, fixed = TRUE)
+    j <- nchar(out[i])
+
+    st1 <- "  Bootstrap Confidence Interval:"
+    tmp <- "  - Confidence Level"
+    tmp2 <- paste0(formatC(level * 100, digits = 1, format = "f"),
+                    "%")
+    st2 <- paste0(tmp,
+                  paste0(rep(" ", j - nchar(tmp) - nchar(tmp2)),
+                          collapse = ""),
+                  tmp2)
+    tmp <- "  - Bootstrap CI Type"
+    tmp2 <- switch(attr(x, "boot_ci_type"),
+                    perc = "Percentile",
+                    bc = "Bias-Corrected",
+                    bca.simple = "Bias-Corrected")
+    st2b <- paste0(tmp,
+                    paste0(rep(" ", j - nchar(tmp) - nchar(tmp2)),
+                          collapse = ""),
+                    tmp2)
+    if (!is.null(est2$boot.p)) {
+      tmp <- "  - Bootstrap P-Value"
+      tmp2 <- "Asymmetric P-Value"
+      st2c <- paste0(tmp,
+                    paste0(rep(" ", j - nchar(tmp) - nchar(tmp2)),
+                            collapse = ""),
+                    tmp2)
+    } else {
+      st2c <- NULL
+    }
+    out <- c(out[seq_len(which(i))],
+              st1,
+              st2,
+              st2b,
+              st2c,
+              out[-seq_len(which(i))])
+    cat(out, sep = "\n")
+  }
+  return(invisible(x))
+}

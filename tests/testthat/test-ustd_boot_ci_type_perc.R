@@ -26,7 +26,7 @@ suppressWarnings(system.time(fit <- sem(model = mod,
                                         data = dat,
                                         estimator = "MLR")))
 fit <- store_boot(fit,
-                  R = 1000,
+                  R = 100,
                   iseed = 1234,
                   do_bootstrapping = TRUE)
 ci_boot <- parameterEstimates_boot(fit,
