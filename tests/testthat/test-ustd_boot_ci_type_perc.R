@@ -11,8 +11,8 @@ test_that("parameterEstimates_boot", {
 set.seed(1234)
 n <- 1000
 x <- runif(n) - .5
-m <- 0.20 * x + rnorm(n)
-y <- 0.17 * m + rnorm(n)
+m <- 0.20 * x + rexp(n)
+y <- 0.17 * m + rexp(n)
 dat <- data.frame(x, y, m)
 mod <-
 "
@@ -23,13 +23,14 @@ total := a*b + cp
 "
 
 suppressWarnings(system.time(fit <- sem(model = mod,
-                                        data = dat)))
+                                        data = dat,
+                                        estimator = "MLR")))
 fit <- store_boot(fit,
-                  R = 100,
+                  R = 1000,
                   iseed = 1234,
                   do_bootstrapping = TRUE)
 ci_boot <- parameterEstimates_boot(fit,
-                                   level = .90,
+                                   level = .95,
                                    boot_pvalue_min_size = 50)
 ci_boot
 
