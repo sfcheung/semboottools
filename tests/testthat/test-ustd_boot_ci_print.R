@@ -1,8 +1,8 @@
 skip_on_cran()
-skip_if(!interactive(),
-        message = "print method not tested if not interactive")
 
 library(testthat)
+
+test_that("ustd print", {
 
 # Example from https://lavaan.ugent.be/tutorial/mediation.html
 
@@ -64,3 +64,18 @@ print(ci_boot2, nd = 2)
 print(ci_boot2, output = "text")
 print(ci_boot2, output = "table")
 
+expect_output(print(ci_boot, nd = 5),
+              "bSE")
+expect_output(print(ci_boot, output = "text"),
+              "Defined Parameter")
+expect_output(print(ci_boot, output = "table"),
+              "lhs")
+
+expect_output(print(ci_boot2, nd = 2),
+              "0.00 ")
+expect_output(print(ci_boot2, output = "text"),
+              "Defined Parameter")
+expect_output(print(ci_boot2, output = "table"),
+              "block")
+
+})

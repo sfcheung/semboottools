@@ -1,4 +1,4 @@
-# semboottools 0.0.0.9007
+# semboottools 0.0.0.9008
 
 * Major functions finalized. Ready to
   use. (0.0.0.9001)
@@ -35,3 +35,6 @@
   `store_boot()` will no longer be
   implicitly called to do bootstrapping.
   (0.0.0.9007)
+
+* Enabled more tests to increase test
+  coverage. (0.0.0.9008)

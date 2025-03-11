@@ -1,8 +1,8 @@
 skip_on_cran()
-skip_if(!interactive(),
-        message = "print method not tested if not interactive")
 
 library(testthat)
+
+test_that("std print", {
 
 # Example from https://lavaan.ugent.be/tutorial/mediation.html
 
@@ -53,11 +53,18 @@ suppressWarnings(system.time(fit2 <- sem(model2,
 ci_boot <- standardizedSolution_boot(fit, boot_pvalue_min_size = 199)
 ci_boot2 <- standardizedSolution_boot(fit2, boot_pvalue_min_size = 200)
 
-print(ci_boot, nd = 5)
-print(ci_boot, output = "text")
-print(ci_boot, output = "text", standardized_only = FALSE)
+expect_output(print(ci_boot, nd = 5),
+              "boot.p")
+expect_output(print(ci_boot, output = "text"),
+              "Defined Parameter")
+expect_output(print(ci_boot, output = "text", standardized_only = FALSE),
+              "Standardized")
 
-print(ci_boot2, nd = 5)
-print(ci_boot2, output = "text")
-print(ci_boot2, output = "text", standardized_only = FALSE)
+expect_output(print(ci_boot2, nd = 5),
+              "0.00000")
+expect_output(print(ci_boot2, output = "text"),
+              "Defined Parameter")
+expect_output(print(ci_boot2, output = "text", standardized_only = FALSE),
+              "Standardized")
 
+})
