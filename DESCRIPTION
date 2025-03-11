@@ -31,4 +31,5 @@ VignetteBuilder: knitr
 Imports:
     boot,
     lavaan,
-    psych
+    psych,
+    lavaan.printer

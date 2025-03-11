@@ -34,9 +34,17 @@
 #' printed in a text format similar to
 #' the printout of the output of
 #' [summary()] of
-#' a 'lavaan'-class object. Unlike
-#' [lavaan::parameterEstimates()],
-#' the default is `"text"`.
+#' a 'lavaan'-class object. If set
+#' to `"lavaan.printer"`, the default,
+#' `lavaan.printer`
+#' will be used to print a more compact
+#' version of the `"text"` output.
+#'
+#' @param drop_cols The name(s) of the
+#' column(s) to drop
+#' if output format is `"lavaan.printer"`.
+#' Default is `"Z"`, to fit the print
+#' out to the usual screen width of 80.
 #'
 #' @seealso [parameterEstimates_boot()]
 #'
@@ -77,7 +85,8 @@
 print.sbt_ustd_boot <- function(x,
                                 ...,
                                 nd = 3,
-                                output = c("lavaan.printer", "text", "table")) {
+                                output = c("lavaan.printer", "text", "table"),
+                                drop_cols = "Z") {
   output <- match.arg(output)
   x_call <- attr(x, "call")
   if (output == "table") {
@@ -108,18 +117,34 @@ print.sbt_ustd_boot <- function(x,
                         pe_attrib[tmp])
   class(est1) <- c("lavaan.parameterEstimates", class(est1))
   if (output == "lavaan.printer") {
+    level <- attr(x, "level")
+    boot_ci_type <- attr(x, "boot_ci_type")
+    has_boot_p <- !is.null(est1$boot.p)
+    boot_est_ustd_i <- attr(x, "boot_est_ustd")
     # TODO:
-    # - Add annotation
+    # - Revise store_boot() to store more information
+    if (!is.null(boot_est_ustd_i)) {
+      R <- sum(stats::complete.cases(boot_est_ustd_i))
+    } else {
+      R <- NA
+    }
     est2 <- lavaan.printer::parameterEstimates_table_list(est1,
                       rename_cols = c("P(>|z|)" = "p",
                                       "S.E." = "SE",
                                       "boot.ci.lower" = "bCI.Lo",
                                       "boot.ci.upper" = "bCI.Up",
                                       "boot.se" = "bSE",
-                                      "boot.p" = "bp"))
+                                      "boot.p" = "bp"),
+                      header_funs = list(hdr_bootstrap),
+                      header_funs_args = list(list(level = level,
+                                                   boot_ci_type = boot_ci_type,
+                                                   has_boot_p = has_boot_p,
+                                                   R = R)),
+                      footer_funs = list(ftr_bootstrap),
+                      footer_funs_args = list(list(has_boot_p = has_boot_p)))
     lavaan.printer::print_parameterEstimates_table_list(est2,
                                                         nd = nd,
-                                                        drop = "Z")
+                                                        drop = drop_cols)
   } else {
     level <- attr(x, "level")
     est2 <- est1
@@ -163,4 +188,51 @@ print.sbt_ustd_boot <- function(x,
     cat(out, sep = "\n")
   }
   return(invisible(x))
+}
+
+#' @noRd
+
+hdr_bootstrap <- function(x,
+                          level,
+                          boot_ci_type,
+                          has_boot_p,
+                          R) {
+  out0 <- data.frame(Field = "Valid Bootstrap Samples:",
+                      Value = as.character(R))
+  out1 <- data.frame(Field = "Level of Confidence:",
+                      Value = sprintf("%3.1f%%", level * 100))
+  out2 <- data.frame(Field = "CI Type:",
+                      Value = switch(boot_ci_type,
+                                    perc = "Percentile",
+                                    bc = "Bias-Corrected",
+                                    bca.simple = "Bias-Corrected"))
+  if (has_boot_p) {
+    out3 <- data.frame(Field = "P-Value:",
+                        Value = "Asymmetric")
+  } else {
+    out3 <- NULL
+  }
+  out <- rbind(out0,
+                out1,
+                out2,
+                out3)
+  colnames(out) <- NULL
+  attr(out, "section_title") <- "Bootstrapping:"
+  out
+}
+
+ftr_bootstrap <- function(x,
+                          has_boot_p) {
+  out0 <- character(0)
+  out0 <- c(out0,
+            "- bSE: Bootstrap standard errors.",
+            "- bCI.Lo, bCI.Up: Bootstrap confidence intervals.")
+  if (has_boot_p) {
+    out0 <- c(out0,
+              "- bp: Bootstrap p-values.")
+  }
+  attr(out0, "section_title") <- "Footnote:"
+  attr(out0, "print_fun") <- "cat"
+  attr(out0, "strwrap_args") <- list(exdent = 2)
+  out0
 }

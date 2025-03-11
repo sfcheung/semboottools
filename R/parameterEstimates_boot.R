@@ -150,7 +150,7 @@
 #' est
 #'
 #' @name parameterEstimates_boot
-#' NULL
+NULL
 
 #' @rdname parameterEstimates_boot
 #' @export

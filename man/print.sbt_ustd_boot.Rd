@@ -4,7 +4,13 @@
 \alias{print.sbt_ustd_boot}
 \title{Print a 'sbt_ustd_boot' Object}
 \usage{
-\method{print}{sbt_ustd_boot}(x, ..., nd = 3, output = c("text", "table"))
+\method{print}{sbt_ustd_boot}(
+  x,
+  ...,
+  nd = 3,
+  output = c("lavaan.printer", "text", "table"),
+  drop_cols = "Z"
+)
 }
 \arguments{
 \item{x}{Object of the class
@@ -27,9 +33,17 @@ If set to \code{"text"}, the results will be
 printed in a text format similar to
 the printout of the output of
 \code{\link[=summary]{summary()}} of
-a 'lavaan'-class object. Unlike
-\code{\link[lavaan:parameterEstimates]{lavaan::parameterEstimates()}},
-the default is \code{"text"}.}
+a 'lavaan'-class object. If set
+to \code{"lavaan.printer"}, the default,
+\code{lavaan.printer}
+will be used to print a more compact
+version of the \code{"text"} output.}
+
+\item{drop_cols}{The name(s) of the
+column(s) to drop
+if output format is \code{"lavaan.printer"}.
+Default is \code{"Z"}, to fit the print
+out to the usual screen width of 80.}
 }
 \value{
 \code{x} is returned invisibly. Called for its side effect.
