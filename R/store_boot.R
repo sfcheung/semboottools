@@ -82,7 +82,7 @@
 #' fitting the model, bootstrapping
 #' will be done using
 #' [lavaan::bootstrapLavaan()]. Default
-#' is `FALSE`.
+#' is `TRUE`.
 #'
 #' @param R If [lavaan::bootstrapLavaan()]
 #' is called (see `do_bootstrapping`),
@@ -191,7 +191,7 @@
 
 store_boot <- function(object,
                        type = "std.all",
-                       do_bootstrapping = FALSE,
+                       do_bootstrapping = TRUE,
                        R = 1000,
                        boot_type = "ordinary",
                        parallel = c("no", "multicore", "snow"),
@@ -206,7 +206,9 @@ store_boot <- function(object,
   boot_est0 <- try(lavaan::lavTech(object, "boot"),
                    silent = TRUE)
   if (inherits(boot_est0, "try-error") && !do_bootstrapping) {
-    stop("Bootstrapping estimates not found. Was se = 'boot' or 'bootstrap'?")
+    stop("Bootstrapping estimates not found ",
+         "probably because se is not 'boot' or 'bootstrap'. ",
+         "Call store_boot() with do_bootstrapping = TRUE.")
   }
   if (inherits(boot_est0, "try-error") && do_bootstrapping) {
     bootstrapLavaan_args1 <- utils::modifyList(bootstrapLavaan_args,
@@ -228,5 +230,13 @@ store_boot <- function(object,
   object@external$sbt_boot_std_type <- type
   boot_def_out <- boot_def(object = object)
   object@external$sbt_boot_def <- boot_def_out
+  # call is stored as a backup plan
+  object@external$sbt_args <- list(R = R,
+                                   boot_type = boot_type,
+                                   parallel = parallel,
+                                   ncpus = ncpus,
+                                   iseed = iseed,
+                                   bootstrapLavaan_args = bootstrapLavaan_args,
+                                   call = match.call())
   object
 }

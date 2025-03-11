@@ -1,4 +1,4 @@
-# semboottools 0.0.0.9006
+# semboottools 0.0.0.9008
 
 * Major functions finalized. Ready to
   use. (0.0.0.9001)
@@ -26,4 +26,15 @@
 * Added `parameterEstimates()`, with
   a print method. Used `lavaan.printer()`
   by default. Also updated the
-  `pkgdown` site (0.0.0.9006)
+  `pkgdown` site. (0.0.0.9006)
+
+* Updated `store_boot()` to store more
+  information. (0.0.0.9007)
+
+* Updated related functions such that
+  `store_boot()` will no longer be
+  implicitly called to do bootstrapping.
+  (0.0.0.9007)
+
+* Enabled more tests to increase test
+  coverage. (0.0.0.9008)

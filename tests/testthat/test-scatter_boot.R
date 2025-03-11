@@ -3,6 +3,8 @@ skip("To be run in an interactive mode")
 library(testthat)
 library(semboottools)
 
+test_that("scatter_boot", {
+
 # Example from https://lavaan.ugent.be/tutorial/mediation.html
 
 library(lavaan)
@@ -62,12 +64,10 @@ scatter_boot(fitgp_boot, c("ab1", "a1", "b1"), standardized = FALSE)
 scatter_boot(fitgp_boot, c("ab1", "a1", "b1", "ab2", "a2", "b2"), standardized = TRUE)
 scatter_boot(fitgp_boot, c("ab1", "a1", "b1", "ab2", "a2", "b2"), standardized = FALSE)
 
-test_that("Expect errors", {
-    expect_error(scatter_boot(fit_boot, "X~~X", standardized = TRUE))
-    expect_error(scatter_boot(fit_boot, "X~~X", standardized = FALSE))
-    expect_error(scatter_boot(fitgp_boot, "X~~X", standardized = TRUE))
-    expect_error(scatter_boot(fitgp_boot, "X~~X", standardized = FALSE))
-  })
+expect_error(scatter_boot(fit_boot, "X~~X", standardized = TRUE))
+expect_error(scatter_boot(fit_boot, "X~~X", standardized = FALSE))
+expect_error(scatter_boot(fitgp_boot, "X~~X", standardized = TRUE))
+expect_error(scatter_boot(fitgp_boot, "X~~X", standardized = FALSE))
 
 # Support standardizedSolution_boot()
 
@@ -85,3 +85,4 @@ scatter_boot(fit_boot, c("c", "a", "b"), standardized = TRUE)
 scatter_boot(stdgp, c("M~~M", "M~~M.g2"))
 scatter_boot(fitgp_boot, c("M~~M", "M~~M.g2"), standardized = TRUE)
 
+})

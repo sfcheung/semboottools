@@ -3,6 +3,8 @@ skip("To be run in an interactive mode")
 library(testthat)
 library(semboottools)
 
+test_that("hist_qq_boot", {
+
 # Example from https://lavaan.ugent.be/tutorial/mediation.html
 
 library(lavaan)
@@ -66,12 +68,10 @@ hist_qq_boot(fitgp_boot, "c2", standardized = FALSE)
 hist_qq_boot(fitgp_boot, "b2", standardized = TRUE)
 hist_qq_boot(fitgp_boot, "b1", standardized = FALSE)
 
-test_that("Expect errors", {
-    expect_error(hist_qq_boot(fit_boot, "X~~X", standardized = TRUE))
-    expect_error(hist_qq_boot(fit_boot, "X~~X", standardized = FALSE))
-    expect_error(hist_qq_boot(fitgp_boot, "X~~X", standardized = TRUE))
-    expect_error(hist_qq_boot(fitgp_boot, "X~~X", standardized = FALSE))
-  })
+expect_error(hist_qq_boot(fit_boot, "X~~X", standardized = TRUE))
+expect_error(hist_qq_boot(fit_boot, "X~~X", standardized = FALSE))
+expect_error(hist_qq_boot(fitgp_boot, "X~~X", standardized = TRUE))
+expect_error(hist_qq_boot(fitgp_boot, "X~~X", standardized = FALSE))
 
 # Support standardizedSolution_boot()
 
@@ -91,3 +91,5 @@ hist_qq_boot(fitgp_boot, "M~~M.g2", standardized = TRUE)
 
 hist_qq_boot(stdgp, "M~~M")
 hist_qq_boot(fitgp_boot, "M~~M", standardized = TRUE)
+
+})
