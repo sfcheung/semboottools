@@ -61,7 +61,13 @@
 #' estimates. The same argument of
 #' [lavaan::parameterEstimates()],
 #' and support all values supported by
-#' [lavaan::parameterEstimates()].
+#' [lavaan::parameterEstimates()]. It is
+#' recommended to use [standardizedSolution_boot()]
+#' or [lavaan::standardizedSolution()]
+#' because this function only report
+#' the point estimates of the standardized
+#' solution, without standard
+#' errors or confidence intervals.
 #'
 #' @param boot_org_ratio The ratio of
 #' (a) the distance of the bootstrap
