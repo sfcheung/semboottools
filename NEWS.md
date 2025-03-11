@@ -1,4 +1,4 @@
-# semboottools 0.0.0.9005
+# semboottools 0.0.0.9006
 
 * Major functions finalized. Ready to
   use. (0.0.0.9001)
@@ -22,3 +22,8 @@
 
 * Updated the maintainer email address.
   (0.0.0.9005)
+
+* Added `parameterEstimates()`, with
+  a print method. Used `lavaan.printer()`
+  by default. Also updated the
+  `pkgdown` site (0.0.0.9006)

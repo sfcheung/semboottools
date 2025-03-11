@@ -47,8 +47,10 @@ reference:
     Main functions for bootstrapping.
 - contents:
   - standardizedSolution_boot
+  - parameterEstimates_boot
   - store_boot
   - print.sbt_std_boot
+  - print.sbt_ustd_boot
 - title: Diagnostics Functions
   desc:  >
     For visualizing the distribution of
