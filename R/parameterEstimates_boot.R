@@ -185,8 +185,7 @@ parameterEstimates_boot <- function(object,
     # store_boot(), to avoid having too many
     # arguments for this function.
     stop("Bootstrap estimates not stored. ",
-         "Please call store_boot() first, with ",
-         "do_bootstrapping set to 'TRUE'.")
+         "Please call store_boot() first.")
     # object <- store_boot(object = object,
     #                      type = type,
     #                      do_bootstrapping = TRUE)
@@ -321,5 +320,6 @@ parameterEstimates_boot <- function(object,
   attr(out_final, "type") <- type
   attr(out_final, "boot_ci_type") <- boot_ci_type
   attr(out_final, "call") <- match.call()
+  attr(out_final, "sbt_args") <- object@external$sbt_args
   out_final
 }

@@ -198,6 +198,13 @@ standardizedSolution_boot <- function(object,
   out_all <- object@external$sbt_boot_std
   type0 <- object@external$sbt_boot_std_type
   if (is.null(out_all)) {
+    boot_est0 <- try(lavaan::lavTech(object, "boot"),
+                     silent = TRUE)
+    if (inherits(boot_est0, "try-error")) {
+      stop("Bootstrapping estimates not found ",
+           "probably because se is not 'boot' or 'bootstrap'. ",
+           "Call store_boot() first.")
+    }
     # If customizing the call to store_boot()
     # is desired, should be done by calling
     # store_boot(), to avoid having too many
@@ -298,5 +305,6 @@ standardizedSolution_boot <- function(object,
   attr(out_final, "type") <- type
   attr(out_final, "boot_ci_type") <- boot_ci_type
   attr(out_final, "call") <- match.call()
+  attr(out_final, "sbt_args") <- object@external$sbt_args
   out_final
 }
