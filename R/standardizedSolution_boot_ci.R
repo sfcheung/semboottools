@@ -298,5 +298,6 @@ standardizedSolution_boot <- function(object,
   attr(out_final, "type") <- type
   attr(out_final, "boot_ci_type") <- boot_ci_type
   attr(out_final, "call") <- match.call()
+  attr(out_final, "sbt_args") <- object@external$sbt_args
   out_final
 }

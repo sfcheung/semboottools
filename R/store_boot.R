@@ -228,5 +228,13 @@ store_boot <- function(object,
   object@external$sbt_boot_std_type <- type
   boot_def_out <- boot_def(object = object)
   object@external$sbt_boot_def <- boot_def_out
+  # call is stored as a backup plan
+  object@external$sbt_args <- list(R = R,
+                                   boot_type = boot_type,
+                                   parallel = parallel,
+                                   ncpus = ncpus,
+                                   iseed = iseed,
+                                   bootstrapLavaan_args = bootstrapLavaan_args,
+                                   call = match.call())
   object
 }
