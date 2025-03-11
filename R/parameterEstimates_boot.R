@@ -185,8 +185,7 @@ parameterEstimates_boot <- function(object,
     # store_boot(), to avoid having too many
     # arguments for this function.
     stop("Bootstrap estimates not stored. ",
-         "Please call store_boot() first, with ",
-         "do_bootstrapping set to 'TRUE'.")
+         "Please call store_boot() first.")
     # object <- store_boot(object = object,
     #                      type = type,
     #                      do_bootstrapping = TRUE)

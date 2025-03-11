@@ -7,7 +7,7 @@
 store_boot(
   object,
   type = "std.all",
-  do_bootstrapping = FALSE,
+  do_bootstrapping = TRUE,
   R = 1000,
   boot_type = "ordinary",
   parallel = c("no", "multicore", "snow"),
@@ -33,7 +33,7 @@ bootstrapping was not requested when
 fitting the model, bootstrapping
 will be done using
 \code{\link[lavaan:bootstrap]{lavaan::bootstrapLavaan()}}. Default
-is \code{FALSE}.}
+is \code{TRUE}.}
 
 \item{R}{If \code{\link[lavaan:bootstrap]{lavaan::bootstrapLavaan()}}
 is called (see \code{do_bootstrapping}),
