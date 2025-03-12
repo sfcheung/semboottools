@@ -50,21 +50,41 @@ suppressWarnings(system.time(fit2 <- sem(model2,
                                          group = "gp",
                                          iseed = 1234)))
 
+suppressWarnings(system.time(fit_noboot <- sem(model,
+                                               data = Data)))
+suppressWarnings(fit_noboot <- store_boot(fit_noboot,
+                                          R = 200,
+                                          iseed = 1234))
+
 ci_boot <- standardizedSolution_boot(fit, boot_pvalue_min_size = 199)
 ci_boot2 <- standardizedSolution_boot(fit2, boot_pvalue_min_size = 200)
+ci_boot_noboot <- standardizedSolution_boot(fit_noboot, boot_pvalue_min_size = 199)
+
+print(ci_boot)
+print(ci_boot, standardized_only = FALSE, nd = 5)
+print(ci_boot, boot_ci_only = TRUE)
+print(ci_boot_noboot, nd = 5)
+print(ci_boot_noboot, boot_ci_only = TRUE)
+print(ci_boot_noboot, standardized_only = FALSE)
+
+print(ci_boot, output = "text")
+print(ci_boot, output = "text", boot_ci_only = TRUE)
+print(ci_boot_noboot, output = "text")
+print(ci_boot_noboot, output = "text", boot_ci_only = TRUE)
+print(ci_boot_noboot, output = "text", standardized_only = FALSE)
 
 expect_output(print(ci_boot, nd = 5),
-              "boot.p")
+              " bSE ")
 expect_output(print(ci_boot, output = "text"),
-              "Defined Parameter")
+              "boot.se")
 expect_output(print(ci_boot, output = "text", standardized_only = FALSE),
-              "Standardized")
+              "Estimate")
 
 expect_output(print(ci_boot2, nd = 5),
               "0.00000")
 expect_output(print(ci_boot2, output = "text"),
               "Defined Parameter")
 expect_output(print(ci_boot2, output = "text", standardized_only = FALSE),
-              "Standardized")
+              "Estimate")
 
 })
