@@ -92,37 +92,76 @@
 print.sbt_std_boot <- function(x,
                                ...,
                                nd = 3,
-                               output = c("text", "table"),
-                               standardized_only = TRUE) {
+                               output = c("lavaan.printer", "text", "table"),
+                               standardized_only = TRUE,
+                               boot_ci_only = FALSE) {
     output <- match.arg(output)
     x_call <- attr(x, "call")
     if (output == "table") {
         NextMethod()
         return(invisible(x))
       }
+
     ptable <- attr(x, "partable")
     est0 <- attr(x, "est")
     est1 <- est0
     est1$id <- seq_len(nrow(est1))
-    i0 <- colnames(x) %in% c("se", "z", "pvalue",
-                             "ci.lower", "ci.upper")
-    est1 <- merge(est1,
-                  x[, !i0])
-    i0 <- colnames(ptable) %in% c("est", "se",
-                                  "user", "free",
-                                  "ustart", "plabel",
-                                  "start",
-                                  "id")
-    est1 <- merge(est1, ptable[, !i0])
-    est1 <- est1[order(est1$id), ]
-    est1$id <- NULL
+    if (standardized_only) {
+      i0 <- colnames(est1) %in% c("est", "se", "z", "pvalue",
+                                  "ci.lower", "ci.upper")
+      est1 <- est1[, !i0]
+      est1 <- merge(est1,
+                    x)
+      i0 <- colnames(ptable) %in% c("est", "se",
+                                    "user", "free",
+                                    "ustart", "plabel",
+                                    "start",
+                                    "id")
+      est1 <- merge(est1, ptable[, !i0])
+      est1 <- est1[order(est1$id), ]
+      est1$id <- NULL
+      # if (boot_ci_only) {
+      #   est1$ci.lower <- NULL
+      #   est1$ci.upper <- NULL
+      #   est1$se <- NULL
+      #   est1$z <- NULL
+      #   est1$pvalue <- NULL
+      # }
+    } else {
+      # Unstandardized and Standardized
+      # Always use boot CI for standardized
+      i0 <- colnames(x) %in% c("se", "z", "pvalue",
+                              "ci.lower", "ci.upper")
+      est1 <- merge(est1,
+                    x[, !i0])
+      i0 <- colnames(ptable) %in% c("est", "se",
+                                    "user", "free",
+                                    "ustart", "plabel",
+                                    "start",
+                                    "id")
+      est1 <- merge(est1, ptable[, !i0])
+      est1 <- est1[order(est1$id), ]
+      est1$id <- NULL
+    }
     class(est1) <- class(est0)
     pe_attrib <- attr(x, "pe_attrib")
     tmp <- !(names(pe_attrib) %in% names(attributes(est1)))
     attributes(est1) <- c(attributes(est1),
                           pe_attrib[tmp])
     class(est1) <- c("lavaan.parameterEstimates", class(est1))
-    if (!standardized_only) {
+
+    # If both est and est.std are present:
+    # - !standardized_only
+    # If only est.std is present:
+    # - if any of these are present: se, pvalue, ci.lower, ci.upper
+    #   - both_ci
+    # - else
+    #   - boot_ci only
+    if (output == "text") {
+      if (!standardized_only) {
+        # This is for diagnostic purpose
+        # Therefore, not as informative as the
+        # standardized_only printout
         tmp <- colnames(est1)
         tmp[tmp == "est.std"] <- "Standardized"
         tmp[tmp == "boot.ci.lower"] <- "ci.std.lower"
@@ -135,49 +174,57 @@ print.sbt_std_boot <- function(x,
       } else {
         level <- attr(x, "level")
         est2 <- est1
-        est2$est <- est2$est.std
-        est2$ci.lower <- est2$boot.ci.lower
-        est2$ci.upper <- est2$boot.ci.upper
-        est2$se <- est2$boot.se
-        est2$boot.se <- NULL
-        est2$z <- NULL
-        # if (!is.null(est2$boot.p)) {
-        #   est2$pvalue <- est2$boot.p
-        # } else {
-        #   est2$pvalue <- NULL
-        # }
-        est2$est.std <- NULL
-        est2$boot.ci.lower <- NULL
-        est2$boot.ci.upper <- NULL
+        tmp <- colnames(est2)
+        tmp[tmp == "est.std"] <- "est"
+        colnames(est2) <- tmp
+
+        if (boot_ci_only) {
+          est2$ci.lower <- NULL
+          est2$ci.upper <- NULL
+          est2$se <- est2$boot.se
+          est2$z <- NULL
+          est2$pvalue <- est2$boot.p
+          est2$boot.se <- NULL
+          est2$boot.p <- NULL
+        }
+
         out <- utils::capture.output(print(est2, nd = nd))
         i <- grepl("Parameter Estimates:", out, fixed = TRUE)
         out[i] <- "Standardized Estimates Only"
         i <- grepl("  Standard errors  ", out, fixed = TRUE)
-        j <- unlist(gregexpr("Bootstrap", out[i]))[1]
-        tmp <- "  Confidence interval"
-        st1 <- paste0(tmp,
-                      paste0(rep(" ", j - nchar(tmp) - 1),
-                             collapse = ""),
-                      "Bootstrap")
+        # j <- unlist(gregexpr("Standard", out[i]))[1]
         j <- nchar(out[i])
-        tmp <- "  Confidence Level"
+        tmp <- "  Standard errors (boot.se)"
+        tmp2 <- "Bootstrap"
+        st0 <- paste0(tmp,
+                      paste0(rep(" ", j - nchar(tmp) - nchar(tmp2)),
+                            collapse = ""),
+                      tmp2)
+        tmp <- "  Confidence interval (boot.ci.)"
+        tmp2 <- "Bootstrap"
+        st1 <- paste0(tmp,
+                      paste0(rep(" ", j - nchar(tmp) - nchar(tmp2)),
+                            collapse = ""),
+                      tmp2)
+        j <- nchar(out[i])
+        tmp <- "  Confidence Level (boot.ci.)"
         tmp2 <- paste0(formatC(level * 100, digits = 1, format = "f"),
-                       "%")
+                      "%")
         st2 <- paste0(tmp,
                       paste0(rep(" ", j - nchar(tmp) - nchar(tmp2)),
-                             collapse = ""),
+                            collapse = ""),
                       tmp2)
-        tmp <- "  Bootstrap CI Type"
+        tmp <- "  Bootstrap CI Type (boot.ci.)"
         tmp2 <- switch(attr(x, "boot_ci_type"),
-                       perc = "Percentile",
-                       bc = "Bias-Corrected",
-                       bca.simple = "Bias-Corrected")
+                      perc = "Percentile",
+                      bc = "Bias-Corrected",
+                      bca.simple = "Bias-Corrected")
         st2b <- paste0(tmp,
-                       paste0(rep(" ", j - nchar(tmp) - nchar(tmp2)),
+                      paste0(rep(" ", j - nchar(tmp) - nchar(tmp2)),
                               collapse = ""),
-                       tmp2)
-        if (!is.null(est2$boot.p)) {
-          tmp <- "  Bootstrap P-Value"
+                      tmp2)
+        if (!is.null(est1$boot.p)) {
+          tmp <- "  Bootstrap P-Value (boot.p)"
           tmp2 <- "Asymmetric P-Value"
           st2c <- paste0(tmp,
                         paste0(rep(" ", j - nchar(tmp) - nchar(tmp2)),
@@ -190,19 +237,77 @@ print.sbt_std_boot <- function(x,
         tmp2 <- attr(x, "type")
         st3 <- paste0(tmp,
                       paste0(rep(" ", j - nchar(tmp) - nchar(tmp2)),
-                             collapse = ""),
+                            collapse = ""),
                       tmp2)
         out <- c(out[seq_len(which(i))],
-                 st1,
-                 st2,
-                 st2b,
-                 st2c,
-                 st3,
-                 out[-seq_len(which(i))])
+                st0,
+                st1,
+                st2,
+                st2b,
+                st2c,
+                st3,
+                out[-seq_len(which(i))])
         out <- gsub("    Estimate  Std.Err",
                     "Standardized  Std.Err",
                     out)
+        if (boot_ci_only) {
+          i <- grepl("  Standard errors  ", out, fixed = TRUE)
+          out <- out[!i]
+          out <- gsub(" Std.Err ",
+                      " boot.se ",
+                      out)
+          out <- gsub(" P(>|z|) ",
+                      "  boot.p ",
+                      out,
+                      fixed = TRUE)
+        }
         cat(out, sep = "\n")
         return(invisible(x))
       }
+    }
   }
+
+#' @noRd
+print_both_ustd_and_std_lp <- function(x,
+                                       nd) {
+  # Both standardized and unstandardized solutions
+  # Boot CI is always used for the standardized solution
+}
+
+#' @noRd
+print_std_boot_ci_lp <- function(x,
+                                 nd) {
+  # Standardized solutions only
+  # Delta method CI and boot CI printed
+  browser()
+}
+
+#' @noRd
+print_std_both_ci_lp <- function(x,
+                                 nd) {
+  # Standardized solutions only
+  # Only boot CI printed
+  browser()
+}
+
+
+#' @noRd
+print_both_ustd_and_std_tx <- function(x,
+                                       nd) {
+  # Both standardized and unstandardized solutions
+  # Boot CI is always used for the standardized solution
+}
+
+#' @noRd
+print_std_boot_ci_tx <- function(x,
+                                 nd) {
+  # Standardized solutions only
+  # Delta method CI and boot CI printed
+}
+
+#' @noRd
+print_std_both_ci_tx <- function(x,
+                                      nd) {
+  # Standardized solutions only
+  # Only boot CI printed
+}
