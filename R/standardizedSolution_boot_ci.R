@@ -214,7 +214,7 @@ standardizedSolution_boot <- function(object,
                          do_bootstrapping = FALSE)
     out_all <- object@external$sbt_boot_std
   } else {
-    if (isFALSE(type0 != type)) {
+    if (isTRUE(type0 != type)) {
       # Stored type and type in call do not match
       object <- store_boot(object = object,
                           type = type,
