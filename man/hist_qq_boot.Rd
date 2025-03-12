@@ -225,7 +225,8 @@ estimates in the standardized solution.
 
 It can also
 plot bootstrap estimates in the output
-of \code{\link[=standardizedSolution_boot]{standardizedSolution_boot()}}.
+of \code{\link[=standardizedSolution_boot]{standardizedSolution_boot()}}
+or \code{\link[=parameterEstimates_boot]{parameterEstimates_boot()}}.
 
 The function \code{\link[=scatter_boot]{scatter_boot()}} is
 used to generate a scatterplot
@@ -233,6 +234,11 @@ matrix of the bootstrap estimates of
 two or more parameters. The function
 \code{\link[psych:pairs.panels]{psych::pairs.panels()}} from the
 package \code{psych} is used.
+
+Like \code{\link[=hist_qq_boot]{hist_qq_boot()}}, it can also
+be used on the output
+of \code{\link[=standardizedSolution_boot]{standardizedSolution_boot()}}
+or \code{\link[=parameterEstimates_boot]{parameterEstimates_boot()}}.
 }
 \examples{
 

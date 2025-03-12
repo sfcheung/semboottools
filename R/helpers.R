@@ -103,13 +103,33 @@ boot_def <- function(object) {
 # - hist_qq_boot()
 
 get_boot_est_std <- function(object) {
+  out <- attr(object, "boot_est_std")
+  if (!is.null(out)) {
+    return(out)
+  }
   return(object@external$sbt_boot_std)
 }
 
 # Called by:
 # - hist_qq_boot()
 
+get_boot_est_ustd <- function(object) {
+  out <- attr(object, "boot_est_ustd")
+  if (!is.null(out)) {
+    return(out)
+  }
+  return(object@external$sbt_boot_ustd)
+}
+
+
+# Called by:
+# - hist_qq_boot()
+
 get_boot_def <- function(object) {
+    out <- attr(object, "boot_def")
+    if (!is.null(out)) {
+      return(out)
+    }
     return(object@external$sbt_boot_def)
   }
 

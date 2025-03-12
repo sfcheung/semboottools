@@ -41,7 +41,8 @@
 #'
 #' It can also
 #' plot bootstrap estimates in the output
-#' of [standardizedSolution_boot()].
+#' of [standardizedSolution_boot()]
+#' or [parameterEstimates_boot()].
 #'
 #' @references
 #' Rousselet, G. A., Pernet, C. R., & Wilcox, R. R. (2021).
@@ -254,8 +255,16 @@ hist_qq_boot <- function(object,
                       qq_line_color = "black",
                       qq_line_linetype = "solid"
                       ) {
-  if (is.null(standardized) && !inherits(object, "sbt_std_boot")) {
+  if (is.null(standardized) &&
+      !(inherits(object, "sbt_std_boot") ||
+        inherits(object, "sbt_ustd_boot"))) {
     stop("'standardized' must be TRUE or FALSE.")
+  }
+  if (inherits(object, "sbt_std_boot") && is.null(standardized)) {
+    standardized <- TRUE
+  }
+  if (inherits(object, "sbt_ustd_boot") && is.null(standardized)) {
+    standardized <- FALSE
   }
   boot_out <- param_find_boot(object = object,
                               param = param,
@@ -339,6 +348,10 @@ param_find_boot <- function(object,
     if (is_sbt_std_boot) {
         standardized <- TRUE
       }
+    is_sbt_ustd_boot <- inherits(object, "sbt_ustd_boot")
+    if (is_sbt_ustd_boot) {
+        standardized <- FALSE
+      }
     if (standardized) {
         if (is_sbt_std_boot) {
             coef_names <- lavaan::lav_partable_labels(object)
@@ -364,20 +377,46 @@ param_find_boot <- function(object,
                         t = boot_t)
           }
       } else {
-        boot_i <- lavaan::lavInspect(object,
-                                     what = "boot")
+        if (is_sbt_ustd_boot) {
+            coef_names <- lavaan::lav_partable_labels(object)
+            boot_i <- attr(object, "boot_est_ustd")
+            if (is.null(boot_i)) {
+                stop("Bootstrap estimates not found in the object.")
+              }
+          } else {
+            boot_i0 <- try(lavaan::lavInspect(object, "boot"), silent = TRUE)
+            boot_i1 <- object@external$sbt_boot_ustd
+            if (inherits(boot_i0, "try-error") && is.null(boot_i1)) {
+                stop("Bootstrapping estimates not found.")
+              }
+            if (!inherits(boot_i0, "try-error")) {
+              boot_i <- boot_i0
+            } else {
+              boot_i <- boot_i1
+            }
+          }
         error_idx <- attr(boot_i, "error.idx")
         if (length(error_idx) != 0) {
             boot_i <- boot_i[-error_idx, ]
           }
         if (param %in% colnames(boot_i)) {
-            boot_t0 <- lavaan::coef(object)[param]
+            if (is_sbt_ustd_boot) {
+              i <- match(param, coef_names)
+              boot_t0 <- object[i, "est"]
+            } else {
+              boot_t0 <- lavaan::coef(object)[param]
+            }
             boot_t <- boot_i[, param, drop = TRUE]
           } else {
             boot_i <- get_boot_def(object)
             if (param %in% colnames(boot_i)) {
-                boot_t0 <- lavaan::coef(object,
-                              type = "user")[param]
+                if (is_sbt_ustd_boot) {
+                  i <- match(param, object[, "label"])
+                  boot_t0 <- object[i, "est"]
+                } else {
+                  boot_t0 <- lavaan::coef(object,
+                                type = "user")[param]
+                }
                 boot_t <- boot_i[, param, drop = TRUE]
               }
           }
@@ -395,6 +434,11 @@ param_find_boot <- function(object,
 #' two or more parameters. The function
 #' [psych::pairs.panels()] from the
 #' package `psych` is used.
+#'
+#' Like [hist_qq_boot()], it can also
+#' be used on the output
+#' of [standardizedSolution_boot()]
+#' or [parameterEstimates_boot()].
 #'
 #' @param params The vector of the names of
 #' the parameters to be plotted, which
@@ -436,8 +480,16 @@ scatter_boot <- function(object,
                          standardized = NULL,
                          main = "Bootstrap Estimates",
                          ...) {
-  if (is.null(standardized) && !inherits(object, "sbt_std_boot")) {
+  if (is.null(standardized) &&
+      !(inherits(object, "sbt_std_boot") ||
+        inherits(object, "sbt_ustd_boot"))) {
     stop("'standardized' must be TRUE or FALSE.")
+  }
+  if (inherits(object, "sbt_std_boot") && is.null(standardized)) {
+    standardized <- TRUE
+  }
+  if (inherits(object, "sbt_ustd_boot") && is.null(standardized)) {
+    standardized <- FALSE
   }
   if (length(params) < 2) {
     stop("Need to select two or more parameters.")
