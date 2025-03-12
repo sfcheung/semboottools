@@ -285,17 +285,19 @@ parameterEstimates_boot <- function(object,
   } else {
     out_all_def <- NULL
   }
-  out$id_est <- NULL
   if (boot_pvalue) {
-    out_final <- cbind(out,
+    out_final <- cbind(out0,
                        `boot.se` = boot_se,
                        `boot.p` = boot_p,
                        boot_ci)
   } else {
-    out_final <- cbind(out,
+    out_final <- cbind(out0,
                        `boot.se` = boot_se,
                        boot_ci)
   }
+  out_final <- out_final[order(out_final$id_est), ]
+  out_final$id_est <- NULL
+  rownames(out_final) <- NULL
   if (boot_org_ratio) {
     tmp1 <- abs(out_final$boot.ci.lower - out_final$est.std) /
                               abs(out_final$ci.lower - out_final$est.std)
