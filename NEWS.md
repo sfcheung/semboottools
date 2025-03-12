@@ -1,4 +1,4 @@
-# semboottools 0.0.0.9009
+# semboottools 0.0.0.9010
 
 * Major functions finalized. Ready to
   use. (0.0.0.9001)
@@ -47,3 +47,8 @@
 * Updated `parameterEstimates_boot()`
   for a bug with multigroup models.
   (0.0.0.9009)
+
+* Updated `hist_qq_boot()` and
+  `scatter_boot()` to support the
+  output of `parameterEstimates_boot()`.
+  (0.0.0.9010)
