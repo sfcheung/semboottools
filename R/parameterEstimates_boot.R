@@ -297,6 +297,7 @@ parameterEstimates_boot <- function(object,
   }
   out_final <- out_final[order(out_final$id_est), ]
   out_final$id_est <- NULL
+  out_final$free <- NULL
   rownames(out_final) <- NULL
   if (boot_org_ratio) {
     tmp1 <- abs(out_final$boot.ci.lower - out_final$est.std) /
