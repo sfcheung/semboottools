@@ -149,7 +149,7 @@ print.sbt_ustd_boot <- function(x,
                                                    has_boot_p = has_boot_p,
                                                    R = R)),
                       footer_funs = list(ftr_bootstrap),
-                      footer_funs_args = list(list(has_boot_p = has_boot_p)))
+                      footer_funs_args = list(list(cnames = colnames(est1))))
     lavaan.printer::print_parameterEstimates_table_list(est2,
                                                         nd = nd,
                                                         drop = drop_cols)
@@ -230,12 +230,29 @@ hdr_bootstrap <- function(x,
 }
 
 ftr_bootstrap <- function(x,
-                          has_boot_p) {
+                          cnames) {
   out0 <- character(0)
-  out0 <- c(out0,
-            "- bSE: Bootstrap standard errors.",
-            "- bCI.Lo, bCI.Up: Bootstrap confidence intervals.")
-  if (has_boot_p) {
+  if ("se" %in% cnames) {
+    out0 <- c(out0,
+              "- SE: Original standard errors.")
+  }
+  if ("pvalue" %in% cnames) {
+    out0 <- c(out0,
+              "- p: Original p-values.")
+  }
+  if ("ci.lower" %in% cnames) {
+    out0 <- c(out0,
+              "- CI.Lo, CI.Up: Original confidence intervals.")
+  }
+  if ("boot.se" %in% cnames) {
+    out0 <- c(out0,
+              "- bSE: Bootstrap standard errors.")
+  }
+  if ("boot.ci.lower" %in% cnames) {
+    out0 <- c(out0,
+              "- bCI.Lo, bCI.Up: Bootstrap confidence intervals.")
+  }
+  if ("boot.p" %in% cnames) {
     out0 <- c(out0,
               "- bp: Bootstrap p-values.")
   }
