@@ -308,6 +308,7 @@ print.sbt_std_boot <- function(x,
         est2 <- lavaan.printer::parameterEstimates_table_list(est1,
                           rename_cols = c("est" = "Est",
                                           "est.std" = "Std",
+                                          "P(>|z|)" = "p",
                                           "S.E." = "SE",
                                           "boot.ci.lower" = "bCI.Lo",
                                           "boot.ci.upper" = "bCI.Up",
@@ -341,6 +342,7 @@ print.sbt_std_boot <- function(x,
         }
         est3 <- lavaan.printer::parameterEstimates_table_list(est2,
                           rename_cols = c("est" = "Std",
+                                          "P(>|z|)" = "p",
                                           "S.E." = "SE",
                                           "boot.ci.lower" = "bCI.Lo",
                                           "boot.ci.upper" = "bCI.Up",
@@ -409,7 +411,7 @@ ftr_ustd_std_bootstrap <- function(x,
   }
   if ("pvalue" %in% cnames) {
     out0 <- c(out0,
-              "- P(>|z|): P-values of unstandardized estimates.")
+              "- p: P-values of unstandardized estimates.")
   }
   if ("ci.lower" %in% cnames) {
     out0 <- c(out0,
@@ -446,7 +448,7 @@ ftr_std_bootstrap <- function(x,
   }
   if ("pvalue" %in% cnames) {
     out0 <- c(out0,
-              "- P(>|z|): Delta method p-values.")
+              "- p: Delta method p-values.")
   }
   if ("ci.lower" %in% cnames) {
     out0 <- c(out0,
