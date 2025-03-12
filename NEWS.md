@@ -1,4 +1,4 @@
-# semboottools 0.0.0.9008
+# semboottools 0.0.0.9010
 
 * Major functions finalized. Ready to
   use. (0.0.0.9001)
@@ -23,8 +23,8 @@
 * Updated the maintainer email address.
   (0.0.0.9005)
 
-* Added `parameterEstimates()`, with
-  a print method. Used `lavaan.printer()`
+* Added `parameterEstimates_boot()`, with
+  a print method. Used `lavaan.printer`
   by default. Also updated the
   `pkgdown` site. (0.0.0.9006)
 
@@ -38,3 +38,17 @@
 
 * Enabled more tests to increase test
   coverage. (0.0.0.9008)
+
+* Updated the print method of the output
+  of `standardizedSolution_boot()` to
+  use `lavaan.printer` by default.
+  (0.0.0.9009)
+
+* Updated `parameterEstimates_boot()`
+  for a bug with multigroup models.
+  (0.0.0.9009)
+
+* Updated `hist_qq_boot()` and
+  `scatter_boot()` to support the
+  output of `parameterEstimates_boot()`.
+  (0.0.0.9010)
