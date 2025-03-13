@@ -1,4 +1,4 @@
-# semboottools 0.0.0.9010
+# semboottools 0.0.0.9011
 
 * Major functions finalized. Ready to
   use. (0.0.0.9001)
@@ -52,3 +52,9 @@
   `scatter_boot()` to support the
   output of `parameterEstimates_boot()`.
   (0.0.0.9010)
+
+* Fixed a problem within a unicode
+  character. (0.0.0.9011)
+
+* Adde the GitHub action folder to
+  .Rbuildignore. (0.0.0.9011)
