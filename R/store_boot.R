@@ -153,7 +153,7 @@
 #'
 #' @author Shu Fai Cheung
 #' <https://orcid.org/0000-0002-9871-9448>.
-#' Based on [semhelpinghands::standardizedSolution_boot_ci()]，
+#' Based on [semhelpinghands::standardizedSolution_boot_ci()],
 #' which was originally proposed in an issue at GitHub
 #' <https://github.com/simsem/semTools/issues/101#issue-1021974657>,
 #' inspired by a discussion at
