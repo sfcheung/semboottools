@@ -1,10 +1,11 @@
 Package: semboottools
 Title: Bootstrapping Helpers For Structural Equation Modelling
-Version: 0.0.0.9000
+Version: 0.0.0.9010
 Authors@R:
     c(person(given = "Wendie",
              family ="Yang",
              role = c("aut", "cre"),
+             email = "1581075494q@gmail.com",
              comment = c(ORCID = "0009-0000-8388-6481")),
       person(given = "Shu Fai",
              family = "Cheung",
@@ -27,3 +28,8 @@ Suggests:
 Config/testthat/edition: 3
 Config/testthat/parallel: true
 VignetteBuilder: knitr
+Imports:
+    boot,
+    lavaan,
+    psych,
+    lavaan.printer
