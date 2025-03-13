@@ -56,5 +56,5 @@
 * Fixed a problem within a unicode
   character. (0.0.0.9011)
 
-* Adde the GitHub action folder to
+* Added the GitHub action folder to
   .Rbuildignore. (0.0.0.9011)
