@@ -300,10 +300,10 @@ parameterEstimates_boot <- function(object,
   out_final$free <- NULL
   rownames(out_final) <- NULL
   if (boot_org_ratio) {
-    tmp1 <- abs(out_final$boot.ci.lower - out_final$est.std) /
-                              abs(out_final$ci.lower - out_final$est.std)
-    tmp2 <- abs(out_final$boot.ci.upper - out_final$est.std) /
-                              abs(out_final$ci.upper - out_final$est.std)
+    tmp1 <- abs(out_final$boot.ci.lower - out_final$est) /
+                              abs(out_final$ci.lower - out_final$est)
+    tmp2 <- abs(out_final$boot.ci.upper - out_final$est) /
+                              abs(out_final$ci.upper - out_final$est)
     tmp1[is.infinite(tmp1) | is.nan(tmp1)] <- NA
     tmp2[is.infinite(tmp2) | is.nan(tmp2)] <- NA
     out_final$ratio.lower <- tmp1
