@@ -1,4 +1,4 @@
-# semboottools 0.0.0.9011
+# semboottools 0.0.0.9012
 
 * Major functions finalized. Ready to
   use. (0.0.0.9001)
@@ -58,3 +58,7 @@
 
 * Added the GitHub action folder to
   .Rbuildignore. (0.0.0.9011)
+
+* Fixed a bug with `boot_org_ratio`
+  in `parameterEstimates_boot()`.
+  (0.0.0.9012)
