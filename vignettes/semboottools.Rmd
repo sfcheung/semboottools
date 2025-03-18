@@ -14,6 +14,115 @@ knitr::opts_chunk$set(
 )
 ```
 
+# Overview
+
+This vignette demonstrates how to form bootstrapping confidence intervals and examining bootstrap estimates in SEM using semboottools.
+
 ```{r setup}
+devtools::load_all()
 library(semboottools)
+library(lavaan)
+```
+
+# Example: Simple Mediation Model
+
+We use a simple mediation model with a large sample (N = 1000).
+
+This model includes: A predictor x, A mediator m, An outcome y.
+
+Indirect effect (ab) and total effect (total) defined.
+
+```{r}
+# Set seed for reproducibility
+set.seed(1234)
+
+# Generate data
+n <- 1000
+x <- runif(n) - 0.5
+m <- 0.20 * x + rnorm(n)
+y <- 0.17 * m + rnorm(n)
+dat <- data.frame(x, y, m)
+
+# Specify mediation model in lavaan syntax
+mod <- '
+  m ~ a * x
+  y ~ b * m + cp * x
+  ab := a * b
+  total := a * b + cp
+'
+```
+## Fit the Model with Bootstrapping
+
+```{r}
+# Fit model with 500 bootstrap samples (should use ≥2000 in real studies)
+fit <- sem(mod, data = dat, se = "boot", bootstrap = 500)
+
+# Summarize unstandardized results
+summary(fit, ci = TRUE)
+```
+
+## Form Bootstrap CIs for Standardized Coefficients
+
+```{r}
+# Basic usage: default settings
+# Compute standardized solution with percentile bootstrap CIs
+std_boot <- standardizedSolution_boot(fit)
+print(std_boot)
+```
+
+## Form Bootstrap CIs for for Unstandardized Cofficients
+
+'parameterEstimates_boot()' computes bootstrap CIs, standard errors, and optional asymmetric p-values for unstandardized parameter estimates, including both free and user-defined parameters.
+
+It requires bootstrap estimates stored via store_boot(), supports percentile and bias-corrected CIs, and outputs bootstrap SEs as the standard deviation of estimates.
+
+```{r}
+# Ensure bootstrap estimates are stored
+fit <- sem(mod, data = dat, fixed.x = FALSE)
+fit <- store_boot(fit) 
+
+# Basic usage: default settings
+# Compute unstandardized solution with percentile bootstrap CIs
+est_boot <- parameterEstimates_boot(fit)
+
+# Print results
+print(est_boot)
+```
+
+
+## Visualize Bootstrap Estimates
+
+To examine the distribution of bootstrap estimates, two functions are available:
+
+-   `hist_qq_boot()`\
+    For histogram + normal QQ-plot of **one parameter**.
+
+-   `scatter_boot()`\
+    For scatterplot matrix of **two or more parameters**.
+
+### Histogram and QQ Plot: `hist_qq_boot()`
+
+```{r}
+# For estimates of user-defined parameters,
+# call store_boot() first.
+fit <- store_boot(fit)
+hist_qq_boot(fit, "a", standardized = FALSE)
+hist_qq_boot(fit, "ab", standardized = FALSE)
+
+
+# For estimates in standardized solution,
+# call store_boot() first.
+fit <- store_boot(fit)
+hist_qq_boot(fit, "b", standardized = TRUE)
+hist_qq_boot(fit, "ab", standardized = TRUE)
+```
+
+### Scatterplot Matrix: `scatter_boot()`
+
+```{r}
+# standardized solution
+scatter_boot(fit, c("a", "b", "ab"), standardized = TRUE)
+
+# unstandardized solution
+scatter_boot(fit, c("a", "b", "ab"), standardized = FALSE)
 ```
