@@ -1,8 +1,8 @@
 ---
-title: "semboottools"
+title: "hist_qq_boot() and  scatter_boot()"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{semboottools}
+  %\VignetteIndexEntry{hist_qq_boot() and  scatter_boot()}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -26,26 +26,34 @@ hist_qq_boot <- function(object,
                       param,
                       standardized = NULL,
                       nclass = NULL,
-                      hist_color = scales::alpha("#5DADE2", 0.2),
+                      hist_color = "#5DADE233",
                       hist_linewidth = 1.5,
                       hist_border_color = "#1B4F72",
                       density_line_type = "solid",
-                      density_line_color = scales::alpha("#8B0000", 0.9),
+                      density_line_color = "#8B0000CC",
                       density_line_linewidth = 2,
                       est_line_color = "#154360",
                       est_line_type = "dashed",
                       est_line_linewidth = 2,
                       qq_dot_pch = 21,
                       qq_dot_color = "#1B4F72",
-                      qq_dot_fill = scales::alpha("#5DADE2", 0.2),
+                      qq_dot_fill = "#5DADE233",
                       qq_dot_size = 1.3,
-                      qq_line_color = scales::alpha("#8B0000", 0.8),
+                      qq_line_color = "#8B0000CC",
                       qq_line_linewidth = 2.1,
                       qq_line_linetype = "solid"
                       )
+
+scatter_boot <- function(object,
+                         params,
+                         standardized = NULL,
+                         main = "Bootstrap Estimates",
+                         )
 ```
 
 ## Arguments
+
+### hist_qq_boot
 
 | Argument               | Description                                                                                                                                                                  |
 |-----------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -68,6 +76,15 @@ hist_qq_boot <- function(object,
 | `qq_line_color`        | Color of the diagonal line in the QQ plot.                                                                                                                                   |
 | `qq_line_linetype`     | Style of the diagonal line in the QQ plot (e.g., `"solid"`).                                                                                                                  |
 
+### scatter_boot()
+
+| Argument        | Description                                                                                                                                                                        |
+|-----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `object`        | A fitted `lavaan` model, or the output from `standardizedSolution_boot()` / `parameterEstimates_boot()`. Make sure the bootstrap estimates are stored before calling this function. |
+| `params`        | A character vector with **two or more** parameter names to include in the scatterplot matrix. The names should match those in `coef()` output.                                      |
+| `standardized`  | Logical. Set to `TRUE` to plot standardized estimates, or `FALSE` for unstandardized ones. If using `standardizedSolution_boot()` output, this is handled automatically.            |
+| `main`          | Title of the scatterplot matrix. Default is `"Bootstrap Estimates"`.                                                                                                    
+| `...`           | Other optional arguments passed to [psych::pairs.panels()] to further customize the appearance of the scatterplot matrix (e.g., correlation method, grid lines, etc.).              |
 
 ## Example
 
@@ -93,13 +110,23 @@ model <- '
 fit1 <- sem(model, data = dat, se = "boot", bootstrap = 1000)
 fit2 <- sem(model, data = dat, fixed.x = FALSE)
 ```
+
 ### Basic usage: default settings
 ```{r, fig.width = 6, fig.height = 3,fig.align='center'}
 fit1 <- store_boot(fit1)
 hist_qq_boot(fit1, param = "ab", standardized = FALSE)
+
+```
+
+```{r}
+scatter_boot(fit1, c("ab", "a", "b"), standardized = FALSE)
 ```
 
 ```{r, fig.width = 6, fig.height = 3, fig.align='center'}
 fit2 <- store_boot(fit2)
 hist_qq_boot(fit2, param = "ab", standardized = TRUE)
+```
+
+```{r}
+scatter_boot(fit2, c("a", "b", "ab"), standardized = TRUE)
 ```

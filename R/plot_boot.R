@@ -251,20 +251,20 @@ hist_qq_boot <- function(object,
                       param,
                       standardized = NULL,
                       nclass = NULL,
-                      hist_color = scales::alpha("#5DADE2", 0.2),
+                      hist_color = "#5DADE233",
                       hist_linewidth = 1.5,
                       hist_border_color = "#1B4F72",
                       density_line_type = "solid",
-                      density_line_color = scales::alpha("#8B0000", 0.9),
+                      density_line_color = "#8B0000CC",
                       density_line_linewidth = 2,
                       est_line_color = "#154360",
                       est_line_type = "dashed",
                       est_line_linewidth = 2,
                       qq_dot_pch = 21,
                       qq_dot_color = "#1B4F72",
-                      qq_dot_fill = scales::alpha("#5DADE2", 0.2),
+                      qq_dot_fill = "#5DADE233",
                       qq_dot_size = 1.3,
-                      qq_line_color = scales::alpha("#8B0000", 0.8),
+                      qq_line_color = "#8B0000CC",
                       qq_line_linewidth = 2.1,
                       qq_line_linetype = "solid"
                       ) {
@@ -304,6 +304,7 @@ hist_qq_boot <- function(object,
   }
 
   par_old <- par(no.readonly = TRUE)
+  on.exit(par(par_old))
 
   ## --- Apply desired settings inside function
   par(family = "serif",   # Times New Roman 系列
@@ -362,7 +363,6 @@ hist_qq_boot <- function(object,
           lty = qq_line_linetype
           )
   par(parold)
-  on.exit(par(par_old))
   invisible(object)
 }
 

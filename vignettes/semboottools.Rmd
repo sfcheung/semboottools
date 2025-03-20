@@ -54,11 +54,10 @@ mod <- '
 ## Fit the Model with Bootstrapping
 
 ```{r}
-# Fit model with 500 bootstrap samples (should use ≥2000 in real studies)
-fit <- sem(mod, data = dat, se = "boot", bootstrap = 500)
-
-# Summarize unstandardized results
+fit <- sem(mod, data = dat, fixed.x = FALSE)
 summary(fit, ci = TRUE)
+# Ensure bootstrap estimates are stored
+fit <- store_boot(fit) 
 ```
 
 ## Form Bootstrap CIs for Standardized Coefficients
@@ -77,10 +76,6 @@ print(std_boot)
 It requires bootstrap estimates stored via store_boot(), supports percentile and bias-corrected CIs, and outputs bootstrap SEs as the standard deviation of estimates.
 
 ```{r}
-# Ensure bootstrap estimates are stored
-fit <- sem(mod, data = dat, fixed.x = FALSE)
-fit <- store_boot(fit) 
-
 # Basic usage: default settings
 # Compute unstandardized solution with percentile bootstrap CIs
 est_boot <- parameterEstimates_boot(fit)
@@ -104,16 +99,8 @@ To examine the distribution of bootstrap estimates, two functions are available:
 
 ```{r, fig.width = 6, fig.height = 3, fig.align='center'}
 # For estimates of user-defined parameters,
-# call store_boot() first.
-fit <- store_boot(fit)
-hist_qq_boot(fit, "a", standardized = FALSE)
 hist_qq_boot(fit, "ab", standardized = FALSE)
-
-
 # For estimates in standardized solution,
-# call store_boot() first.
-fit <- store_boot(fit)
-hist_qq_boot(fit, "b", standardized = TRUE)
 hist_qq_boot(fit, "ab", standardized = TRUE)
 ```
 
@@ -122,7 +109,6 @@ hist_qq_boot(fit, "ab", standardized = TRUE)
 ```{r}
 # standardized solution
 scatter_boot(fit, c("a", "b", "ab"), standardized = TRUE)
-
 # unstandardized solution
 scatter_boot(fit, c("a", "b", "ab"), standardized = FALSE)
 ```

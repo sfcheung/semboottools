@@ -81,6 +81,13 @@ std_boot <- standardizedSolution_boot(fit)
 print(std_boot)
 ```
 
+```{r}
+# this function also do not require 'se = "boot"' when fitting the model
+fit2 <- sem(mod, data = dat, fixed.x = FALSE)
+fit2 <- store_boot(fit2, R = 500)
+std_boot2 <- standardizedSolution_boot(fit2)
+print(std_boot)
+```
 
 ### standardizedSolution_boot(): Different Options
 
