@@ -1,0 +1,119 @@
+---
+title: "semboottools"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{semboottools}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+devtools::load_all()
+library(semboottools)
+library(lavaan)
+```
+
+## Function Syntax
+
+```{r eval = FALSE}
+parameterEstimates_boot(object,
+                        level = .95,
+                        standardized = FALSE,
+                        boot_org_ratio = FALSE,
+                        boot_ci_type = c("perc", "bc", "bca.simple"),
+                        save_boot_est = TRUE,
+                        boot_pvalue = TRUE,
+                        boot_pvalue_min_size = 1000,
+                        ...)
+```
+
+
+## Arguments
+
+| Argument               | Description                                                                                                                                                                                                |
+|-----------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `object`               | A model fitted by `lavaan`.                                                                                                                                                                                 |
+| `level`                | Confidence level for the confidence intervals. For example, `.95` gives 95% confidence intervals.                                                                                                          |
+| `standardized`         | Whether to return standardized estimates. Same as in `lavaan::parameterEstimates()`. You can use `"std.all"`, `"std.lv"`, etc. For detailed standardized results with CIs, use `standardizedSolution_boot()` instead. |
+| `boot_org_ratio`       | Whether to calculate how wide the bootstrap confidence interval is compared to the original confidence interval (from delta method). Useful to compare the two methods.                                     |
+| `boot_ci_type`         | Method for forming bootstrap confidence intervals. `"perc"` gives percentile intervals; `"bc"` and `"bca.simple"` give bias-corrected intervals.                                                            |
+| `save_boot_est`        | Whether to save the bootstrap estimates in the result. Saved in attributes `boot_est_ustd` (free parameters) and `boot_def` (user-defined parameters) if `TRUE`.                                            |
+| `boot_pvalue`          | Whether to compute asymmetric *p*-values based on bootstrap results. Only available when percentile confidence intervals are used.                                                                          |
+| `boot_pvalue_min_size` | Minimum number of valid bootstrap samples needed to compute asymmetric *p*-values. If fewer samples are available, *p*-values will not be computed and will be shown as `NA`.                                |
+| `...`                  | Additional arguments passed to `lavaan::parameterEstimates()`.                                                                                                                                             |
+
+## Example
+
+### Data and Model
+
+```{r}
+# Set seed for reproducibility
+set.seed(1234)
+
+# Generate data
+n <- 1000
+x <- runif(n) - 0.5
+m <- 0.20 * x + rnorm(n)
+y <- 0.17 * m + rnorm(n)
+dat <- data.frame(x, y, m)
+
+# Specify mediation model in lavaan syntax
+mod <- '
+  m ~ a * x
+  y ~ b * m + cp * x
+  ab := a * b
+  total := a * b + cp
+'
+```
+
+### Basic usage: default settings
+```{r}
+# Ensure bootstrap estimates are stored
+fit <- sem(mod, data = dat, fixed.x = FALSE)
+fit <- store_boot(fit) 
+est_boot <- parameterEstimates_boot(fit)
+print(est_boot)
+```
+
+### parameterEstimates_boot(): Different Options
+
+```{r eval = FALSE}
+
+# Change confidence level to 99%
+est_boot <- parameterEstimates_boot(fit, level = 0.99)
+# Use bias-corrected (BC) bootstrap confidence intervals
+est_boot <- parameterEstimates_boot(fit, boot_ci_type = "bc")
+# Turn off asymmetric bootstrap p-values
+est_boot <- parameterEstimates_boot(fit, boot_pvalue = FALSE)
+# Do not save bootstrap estimates (for memory saving)
+est_boot <- parameterEstimates_boot(fit, save_boot_est = FALSE)
+# Compute and display bootstrap-to-original CI ratio
+est_boot <- parameterEstimates_boot(fit, boot_org_ratio = TRUE)
+# Combine options: BC CI, 99% level, no p-values
+est_boot <- parameterEstimates_boot(fit,
+                                    level = 0.99,
+                                    boot_ci_type = "bc",
+                                    boot_pvalue = FALSE)
+```
+
+### print(): Different Options
+
+```{r eval = FALSE}
+# Print with more decimal places (e.g., 5 digits)
+print(est_boot, nd = 5)
+# Print in lavaan-style text format (similar to summary())
+print(est_boot, output = "text")
+# Print as a clean data frame table
+print(est_boot, output = "table")
+# Drop specific columns (e.g., "Z") in lavaan.printer format
+print(est_boot, drop_cols = "Z")
+# Combine options: 5 decimal digits, text format
+print(est_boot, nd = 5, output = "text")
+```

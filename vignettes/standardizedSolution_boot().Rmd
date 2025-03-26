@@ -1,0 +1,128 @@
+---
+title: "semboottools::standardizedSolution_boot()"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{semboottools}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+devtools::load_all()
+library(semboottools)
+library(lavaan)
+```
+
+## Function Syntax
+
+```{r eval = FALSE}
+standardizedSolution_boot(object,
+                          level = .95,
+                          type = "std.all",
+                          boot_delta_ratio = FALSE,
+                          boot_ci_type = c("perc", "bc", "bca.simple"),
+                          save_boot_est_std = TRUE,
+                          boot_pvalue = TRUE,
+                          boot_pvalue_min_size = 1000,
+                          ...)
+```
+
+## Arguments
+
+| Argument               | Description                                                                                                                                                                                                |
+|-----------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `object`               | A model fitted by `lavaan`.                                                                                                                                |
+| `level`                | Confidence level for the confidence intervals. For example, `.95` gives 95% confidence intervals.                                                                                                          |
+| `type`                 | Type of standardized coefficients. Same as in `lavaan::standardizedSolution()`, such as `"std.all"` or `"std.lv"`.                                                                                           |
+| `boot_delta_ratio`     | Whether to calculate how wide the bootstrap confidence interval is compared to the usual confidence interval (delta method). Useful for comparing both methods.                                            |
+| `boot_ci_type`         | Method for forming bootstrap confidence intervals. `"perc"` gives percentile intervals; `"bc"` and `"bca.simple"` give bias-corrected intervals.                                                            |
+| `save_boot_est_std`    | Whether to save the bootstrap estimates of standardized coefficients in the result. Saved in the attribute `boot_est_std` if `TRUE`.                                                                         |
+| `boot_pvalue`          | Whether to compute asymmetric *p*-values based on bootstrap results. Only available when percentile confidence intervals are used.                                                                          |
+| `boot_pvalue_min_size` | Minimum number of valid bootstrap samples needed to compute asymmetric *p*-values. If fewer samples are available, *p*-values will not be computed and will be shown as `NA`.                                |
+| `...`                  | Additional arguments passed to `lavaan::standardizedSolution()`.                                                                                                                                             |
+
+## Example
+
+### Data and Model
+
+```{r}
+# Set seed for reproducibility
+set.seed(1234)
+
+# Generate data
+n <- 1000
+x <- runif(n) - 0.5
+m <- 0.20 * x + rnorm(n)
+y <- 0.17 * m + rnorm(n)
+dat <- data.frame(x, y, m)
+
+# Specify mediation model in lavaan syntax
+mod <- '
+  m ~ a * x
+  y ~ b * m + cp * x
+  ab := a * b
+  total := a * b + cp
+'
+```
+
+### Basic usage: default settings
+
+```{r}
+# (should use ≥2000 in real studies)
+fit <- sem(mod, data = dat, se = "boot", bootstrap = 500)
+std_boot <- standardizedSolution_boot(fit)
+print(std_boot)
+```
+
+```{r}
+# this function also do not require 'se = "boot"' when fitting the model
+fit2 <- sem(mod, data = dat, fixed.x = FALSE)
+fit2 <- store_boot(fit2, R = 500)
+std_boot2 <- standardizedSolution_boot(fit2)
+print(std_boot)
+```
+
+### standardizedSolution_boot(): Different Options
+
+```{r eval = FALSE}
+# Change confidence level
+std_boot <- standardizedSolution_boot(fit, level = 0.99)
+# Use bias-corrected bootstrap CIs
+std_boot <- standardizedSolution_boot(fit, boot_ci_type = "bc")
+std_boot <- standardizedSolution_boot(fit, boot_ci_type = "bca.simple")
+# Compute delta ratio
+std_boot <- standardizedSolution_boot(fit, boot_delta_ratio = TRUE)
+# Do not save bootstrap estimates
+std_boot <- standardizedSolution_boot(fit, save_boot_est_std = FALSE)
+# Turn off asymmetric bootstrap p-values
+std_boot <- standardizedSolution_boot(fit, boot_pvalue = FALSE)
+# Combine options
+std_boot <- standardizedSolution_boot(fit,
+                                      boot_ci_type = "bc",
+                                      boot_delta_ratio = TRUE)
+```
+
+### print(): Different Options
+
+```{r eval = FALSE}
+
+# Print standardized solution in friendly format
+print(std_boot, output = "text")
+# Print with more decimal places (e.g., 5 decimal digits)
+print(std_boot, nd = 5)
+# Print only bootstrap confidence intervals
+print(std_boot, boot_ci_only = TRUE)
+# Print both unstandardized and standardized solution
+print(std_boot, standardized_only = FALSE)
+# Combine options: more decimals + show both solutions
+print(std_boot, nd = 4, standardized_only = FALSE)
+# Combine options: show only bootstrap CI, 5 decimal places
+print(std_boot, boot_ci_only = TRUE, nd = 5)
+```
