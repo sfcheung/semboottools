@@ -8,6 +8,14 @@
 \description{
 A collection of helper functions for forming bootstrapping confidence intervals and examining bootstrap estimates in structural equation modelling. Currently supports models fitted by the 'lavaan' package by Rosseel (2012) \doi{ 10.18637/jss.v048.i02}.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://Yangzhen1999.github.io/semboottools}
+  \item Report bugs at \url{https://github.com/Yangzhen1999/semboottools/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Wendie Yang \email{1581075494q@gmail.com} (\href{https://orcid.org/0009-0000-8388-6481}{ORCID})
 

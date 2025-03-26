@@ -1,8 +1,8 @@
 ---
-title: "semboottools::standardizedSolution_boot()"
+title: "semboottools::standardizedSolution_boot"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{semboottools}
+  %\VignetteIndexEntry{semboottools::standardizedSolution_boot}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -15,7 +15,6 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-devtools::load_all()
 library(semboottools)
 library(lavaan)
 ```
