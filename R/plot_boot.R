@@ -93,12 +93,18 @@
 #' @param hist_color String. The color of the
 #' bars in the histogram. It will be
 #' passed to [hist()] for the argument
-#' `col`. Default is `"lightgrey"`.
+#' `col`. Default is light blue (`scales::alpha("#5DADE2", 0.2)`).
 #'
 #' @param hist_linewidth The width of
 #' the borders of the bars in the
-#' histogram. Default is 1.
+#' histogram. Default is 1.5.
 #'
+#' @param hist_border_color String.
+#' The color of the borders (outline) of the bars
+#' in the histogram. It will be passed to [hist()]
+#' for the argument `border`.
+#' Default is a dark blue color (`"#1B4F72"`).
+
 #' @param density_line_type String.
 #' The type of the line of the density
 #' curve in the histogram. It will be
@@ -125,7 +131,7 @@
 #' of the parameter. It will be
 #' passed to [abline()] for the argument
 #' `lty`. Default is
-#' `"dotted"`,
+#' `"dashed"`,
 #'
 #' @param est_line_color String. The
 #' color of the vertical line showing
@@ -133,7 +139,6 @@
 #' It will be
 #' passed to [abline()] for the argument
 #' `col`.
-#' Default is `"red"`.
 #'
 #' @param est_line_linewidth The width
 #' of the vertical line showing the
@@ -153,20 +158,27 @@
 #' It will be
 #' passed to [qqnorm()] for the argument
 #' `col`.
-#' Default is `"black"`.
 #'
 #' @param qq_dot_pch Numeric. The shape
 #' of the points in the normal QQ-plot.
 #' It will be
 #' passed to [qqnorm()] for the argument
-#' `pch`. Default is 16.
+#' `pch`. Default is 21.
 #'
+#' @param qq_dot_fill String.
+#' The fill color of the points in the normal QQ-plot.
+#' Only applicable when `qq_dot_pch` is set to a symbol
+#' that allows fill color (e.g., `pch = 21`).
+#' It will be passed to [qqnorm()] for the argument `bg`.
+#' Default is a semi-transparent light blue
+#' (`scales::alpha("#5DADE2", 0.2)`).
+
 #' @param qq_line_linewidth The width
 #' of the diagonal line to be drawn in
 #' the normal QQ-plot.
 #' It will be
 #' passed to [qqline()] for the argument
-#' `lwd`. Default is 2.
+#' `lwd`. Default is 2.1.
 #'
 #' @param qq_line_color String. The color
 #' of the diagonal line to be drawn in
@@ -174,7 +186,6 @@
 #' It will be
 #' passed to [qqline()] for the argument
 #' `col`.
-#' Default is `"black"`.
 #'
 #' @param qq_line_linetype The type of
 #' the diagonal line to be drawn in the
@@ -240,19 +251,21 @@ hist_qq_boot <- function(object,
                       param,
                       standardized = NULL,
                       nclass = NULL,
-                      hist_color = "lightgrey",
-                      hist_linewidth = 1,
+                      hist_color = "#5DADE233",
+                      hist_linewidth = 1.5,
+                      hist_border_color = "#1B4F72",
                       density_line_type = "solid",
-                      density_line_color = "blue",
+                      density_line_color = "#8B0000CC",
                       density_line_linewidth = 2,
-                      est_line_type = "dotted",
-                      est_line_color = "red",
+                      est_line_color = "#154360",
+                      est_line_type = "dashed",
                       est_line_linewidth = 2,
-                      qq_dot_size = 2,
-                      qq_dot_color = "black",
-                      qq_dot_pch = 16,
-                      qq_line_linewidth = 2,
-                      qq_line_color = "black",
+                      qq_dot_pch = 21,
+                      qq_dot_color = "#1B4F72",
+                      qq_dot_fill = "#5DADE233",
+                      qq_dot_size = 1.3,
+                      qq_line_color = "#8B0000CC",
+                      qq_line_linewidth = 2.1,
                       qq_line_linetype = "solid"
                       ) {
   if (is.null(standardized) &&
@@ -289,6 +302,21 @@ hist_qq_boot <- function(object,
   if (is.null(nclass)) {
     nclass <- min(max(ceiling(length(t) / 25), 10), 100)
   }
+
+  par_old <- par(no.readonly = TRUE)
+  on.exit(par(par_old))
+
+  ## --- Apply desired settings inside function
+  par(family = "serif",   # Times New Roman 系列
+      cex.main = 1,
+      font.main = 2,
+      cex.lab = 0.9,
+      cex.axis = 0.8,
+      mgp = c(2, 0.6, 0),
+      tcl = -0.3,
+      lwd = 0.8)
+
+
   # From plot.boot()
   #  Calculate the breakpoints for the histogram so that one of them is
   #  exactly t0.
@@ -306,6 +334,7 @@ hist_qq_boot <- function(object,
        probability = TRUE,
        breaks = bks,
        col = hist_color,
+       border = hist_border_color,
        main = paste0("Histogram of ",
                      param),
        xlab = param,
@@ -323,6 +352,7 @@ hist_qq_boot <- function(object,
           cex = qq_dot_size,
           col = qq_dot_color,
           pch = qq_dot_pch,
+          bg = qq_dot_fill,
           main = paste0("Normal QQ-Plot of ",
                 param),
           xlab = "Quantiles of Standard Normal",
@@ -330,7 +360,8 @@ hist_qq_boot <- function(object,
   qqline(t,
           lwd = qq_line_linewidth,
           col = qq_line_color,
-          lty = qq_line_linetype)
+          lty = qq_line_linetype
+          )
   par(parold)
   invisible(object)
 }

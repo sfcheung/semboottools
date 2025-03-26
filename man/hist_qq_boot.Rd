@@ -10,19 +10,21 @@ hist_qq_boot(
   param,
   standardized = NULL,
   nclass = NULL,
-  hist_color = "lightgrey",
-  hist_linewidth = 1,
+  hist_color = "#5DADE233",
+  hist_linewidth = 1.5,
+  hist_border_color = "#1B4F72",
   density_line_type = "solid",
-  density_line_color = "blue",
+  density_line_color = "#8B0000CC",
   density_line_linewidth = 2,
-  est_line_type = "dotted",
-  est_line_color = "red",
+  est_line_color = "#154360",
+  est_line_type = "dashed",
   est_line_linewidth = 2,
-  qq_dot_size = 2,
-  qq_dot_color = "black",
-  qq_dot_pch = 16,
-  qq_line_linewidth = 2,
-  qq_line_color = "black",
+  qq_dot_pch = 21,
+  qq_dot_color = "#1B4F72",
+  qq_dot_fill = "#5DADE233",
+  qq_dot_size = 1.3,
+  qq_line_color = "#8B0000CC",
+  qq_line_linewidth = 2.1,
   qq_line_linetype = "solid"
 )
 
@@ -72,11 +74,17 @@ This argument will be passed to
 \item{hist_color}{String. The color of the
 bars in the histogram. It will be
 passed to \code{\link[=hist]{hist()}} for the argument
-\code{col}. Default is \code{"lightgrey"}.}
+\code{col}. Default is light blue (\code{scales::alpha("#5DADE2", 0.2)}).}
 
 \item{hist_linewidth}{The width of
 the borders of the bars in the
-histogram. Default is 1.}
+histogram. Default is 1.5.}
+
+\item{hist_border_color}{String.
+The color of the borders (outline) of the bars
+in the histogram. It will be passed to \code{\link[=hist]{hist()}}
+for the argument \code{border}.
+Default is a dark blue color (\code{"#1B4F72"}).}
 
 \item{density_line_type}{String.
 The type of the line of the density
@@ -98,21 +106,20 @@ passed to \code{\link[=lines]{lines()}} for the argument
 \code{lwd}.
 Default is 2.}
 
+\item{est_line_color}{String. The
+color of the vertical line showing
+the point estimate in the histogram.
+It will be
+passed to \code{\link[=abline]{abline()}} for the argument
+\code{col}.}
+
 \item{est_line_type}{String. The
 type of the vertical line in the
 histogram showing the point estimate
 of the parameter. It will be
 passed to \code{\link[=abline]{abline()}} for the argument
 \code{lty}. Default is
-\code{"dotted"},}
-
-\item{est_line_color}{String. The
-color of the vertical line showing
-the point estimate in the histogram.
-It will be
-passed to \code{\link[=abline]{abline()}} for the argument
-\code{col}.
-Default is \code{"red"}.}
+\code{"dashed"},}
 
 \item{est_line_linewidth}{The width
 of the vertical line showing the
@@ -121,39 +128,45 @@ It will be
 passed to \code{\link[=hist]{hist()}} for the argument
 \code{lwd}.  Default is 2.}
 
+\item{qq_dot_pch}{Numeric. The shape
+of the points in the normal QQ-plot.
+It will be
+passed to \code{\link[=qqnorm]{qqnorm()}} for the argument
+\code{pch}. Default is 21.}
+
+\item{qq_dot_color}{String. The color
+of the points in the normal QQ-plot.
+It will be
+passed to \code{\link[=qqnorm]{qqnorm()}} for the argument
+\code{col}.}
+
+\item{qq_dot_fill}{String.
+The fill color of the points in the normal QQ-plot.
+Only applicable when \code{qq_dot_pch} is set to a symbol
+that allows fill color (e.g., \code{pch = 21}).
+It will be passed to \code{\link[=qqnorm]{qqnorm()}} for the argument \code{bg}.
+Default is a semi-transparent light blue
+(\code{scales::alpha("#5DADE2", 0.2)}).}
+
 \item{qq_dot_size}{The size of the
 points in the normal QQ-plot.
 It will be
 passed to \code{\link[=qqnorm]{qqnorm()}} for the argument
 \code{cex}. Default is 2.}
 
-\item{qq_dot_color}{String. The color
-of the points in the normal QQ-plot.
+\item{qq_line_color}{String. The color
+of the diagonal line to be drawn in
+the normal QQ-plot.
 It will be
-passed to \code{\link[=qqnorm]{qqnorm()}} for the argument
-\code{col}.
-Default is \code{"black"}.}
-
-\item{qq_dot_pch}{Numeric. The shape
-of the points in the normal QQ-plot.
-It will be
-passed to \code{\link[=qqnorm]{qqnorm()}} for the argument
-\code{pch}. Default is 16.}
+passed to \code{\link[=qqline]{qqline()}} for the argument
+\code{col}.}
 
 \item{qq_line_linewidth}{The width
 of the diagonal line to be drawn in
 the normal QQ-plot.
 It will be
 passed to \code{\link[=qqline]{qqline()}} for the argument
-\code{lwd}. Default is 2.}
-
-\item{qq_line_color}{String. The color
-of the diagonal line to be drawn in
-the normal QQ-plot.
-It will be
-passed to \code{\link[=qqline]{qqline()}} for the argument
-\code{col}.
-Default is \code{"black"}.}
+\code{lwd}. Default is 2.1.}
 
 \item{qq_line_linetype}{The type of
 the diagonal line to be drawn in the

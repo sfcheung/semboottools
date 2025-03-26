@@ -33,3 +33,6 @@ Imports:
     lavaan,
     psych,
     lavaan.printer
+URL: https://Yangzhen1999.github.io/semboottools
+BugReports: https://github.com/Yangzhen1999/semboottools/issues
+
