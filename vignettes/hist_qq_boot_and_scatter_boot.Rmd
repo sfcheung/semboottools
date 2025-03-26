@@ -1,8 +1,8 @@
 ---
-title: "hist_qq_boot() and  scatter_boot()"
+title: "hist_qq_boot_and_scatter_boot"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{hist_qq_boot() and  scatter_boot()}
+  %\VignetteIndexEntry{hist_qq_boot_and_scatter_boot}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -15,7 +15,6 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-devtools::load_all()
 library(semboottools)
 library(lavaan)
 ```

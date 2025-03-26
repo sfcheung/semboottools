@@ -19,7 +19,6 @@ knitr::opts_chunk$set(
 This vignette demonstrates how to form bootstrapping confidence intervals and examining bootstrap estimates in SEM using semboottools.
 
 ```{r setup}
-devtools::load_all()
 library(semboottools)
 library(lavaan)
 ```
