@@ -250,7 +250,7 @@
 hist_qq_boot <- function(object,
                       param,
                       standardized = NULL,
-                      nclass = NULL,
+                      nclass = 35,
                       hist_color = "#5DADE233",
                       hist_linewidth = 1.5,
                       hist_border_color = "#1B4F72",
@@ -293,6 +293,24 @@ hist_qq_boot <- function(object,
   }
   t0 <- boot_out$t0
   t <- boot_out$t
+
+  ## ---- obtain Bootstrap CI
+  ci_lower <- ci_upper <- NA
+  if ((inherits(object, "sbt_std_boot") || inherits(object, "sbt_ustd_boot")) &&
+      all(c("boot.ci.lower", "boot.ci.upper") %in% names(object))) {
+    param_idx <- which(
+      paste0(object$lhs, object$op, object$rhs) == param |
+        object$label == param |
+        object$lhs == param
+    )
+
+    if (length(param_idx) == 1) {
+      ci_lower <- object$boot.ci.lower[param_idx]
+      ci_upper <- object$boot.ci.upper[param_idx]
+    }
+  }
+
+
   tmp <- range(t)
   tmp <- tmp[2] - tmp[1]
   if (tmp == 0) {
@@ -315,7 +333,6 @@ hist_qq_boot <- function(object,
       mgp = c(2, 0.6, 0),
       tcl = -0.3,
       lwd = 0.8)
-
 
   # From plot.boot()
   #  Calculate the breakpoints for the histogram so that one of them is
@@ -340,14 +357,77 @@ hist_qq_boot <- function(object,
        xlab = param,
        ylab = "Density")
   par(parold2)
+
+  #plot
+  # 计算密度线（只做一次）
+  d <- density(t)
+
+  # 获取对应 CI 点在密度线上的 y 值（用 approx 插值）
+  y_lower <- approx(d$x, d$y, xout = ci_lower)$y
+  y_upper <- approx(d$x, d$y, xout = ci_upper)$y
+
+  # 添加 CI 左边界线
+  if (!is.na(ci_lower)) {
+    segments(x0 = ci_lower, y0 = 0, x1 = ci_lower, y1 = y_lower,
+             col = "#8B0000CC", lty = "dashed", lwd = 2)
+    text(ci_lower+ 0.025 * diff(range(t)),font = 2, y_lower + 0.04 * max(d$y),
+         labels = paste0("L = ", round(ci_lower, 3)),
+         pos = 2, cex = 0.5, col = "black")
+  }
+
+  # 添加 CI 右边界线
+  if (!is.na(ci_upper)) {
+    segments(x0 = ci_upper, y0 = 0, x1 = ci_upper, y1 = y_upper,
+             col = "#8B0000CC", lty = "dashed", lwd = 2)
+    text(ci_upper + -0.04 * diff(range(t)),font = 2, y_upper + 0.04 * max(d$y),
+         labels = paste0("U = ", round(ci_upper, 3)),
+         pos = 4, cex = 0.5, col = "black")
+  }
+
+
   lines(stats::density(t),
         lwd = density_line_linewidth,
         col = density_line_color,
         lty = density_line_type)
-  abline(v = t0,
-          lwd = est_line_linewidth,
-          col = est_line_color,
+
+  lines(stats::density(t),
+        lwd = density_line_linewidth,
+        col = density_line_color,
+        lty = density_line_type)
+
+  # Add the SD arrows and label
+  mean_val <- t0
+  sd_val   <- sd(t, na.rm = TRUE)
+  x_left   <- mean_val - sd_val
+  x_right  <- mean_val + sd_val
+  y_pos    <- max(d$y) * 0.5
+
+  arrows(x0 = x_left, y0 = y_pos, x1 = x_right, y1 = y_pos,
+         code = 3, angle = 90, length = 0.07, lwd = 1.5, col = "gray50", lty = 2)
+
+  text(x = x_right + 0.05 * diff(range(t)),  # push to the right
+       y = y_pos,
+       labels = paste0("SD = ", round(sd_val, 2)),
+       cex = 0.5,
+       col = "black",
+       font = 2,
+       adj = 0)  # left-aligned
+
+
+
+   abline(v = t0,
+          lwd = 2.5,
+          col = "black",
           lty = est_line_type)
+
+   text(t0 + 0.01 * diff(range(t)),         # 稍向右偏移
+       max(d$y) * 0.95,                    # 高度靠近顶部
+       labels = paste0("Sample mean = ", round(t0, 3)),
+       pos = 4,                            # 向左靠
+       cex = 0.5,                         # 字号略小
+       col = "black",
+       font=2)
+
   qqnorm(t,
           cex = qq_dot_size,
           col = qq_dot_color,
