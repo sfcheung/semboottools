@@ -94,20 +94,19 @@ gg_hist_qq_boot <- function(object,
                             show_mean      = TRUE,
                             show_sd_arrow  = TRUE,
                             show_qq        = FALSE,
-                            show_hist = FALSE,
+                            show_hist      = FALSE,
                             text_size      = 3,
                             ci_label_digits   = 3,
                             mean_label_digits = 3,
                             sd_label_digits   = 3,
-                            trim_quantiles = NULL,          # e.g., c(.005,.995) 可裁尾
-                            ci_line_color  = "black",     # 红色 CI 线
+                            trim_quantiles = NULL,          # e.g., c(.005,.995)
+                            ci_line_color  = "#D62728",     # 更显眼的红色
                             dens_line_color = "#8B0000CC",
                             bar_fill   = "#5DADE233",
                             bar_color  = "#1B4F72",
                             return = c("draw", "ggplot", "data")) {
+
   return <- match.arg(return)
-  if (!requireNamespace("ggplot2", quietly = TRUE)) stop("Please install.packages('ggplot2')")
-  library(ggplot2)
 
   # --- standardized 推断
   if (is.null(standardized) &&
@@ -128,45 +127,31 @@ gg_hist_qq_boot <- function(object,
   df_hist <- data.frame(t = t)
   df_dens <- data.frame(x = d_obj$x, y = d_obj$y)
   sdv     <- stats::sd(t, na.rm = TRUE)
-  x_min   <- min(t); x_max <- max(t)
 
-  ## ---- obtain Bootstrap CI (robust matching) ----
+  ## ---- obtain Bootstrap CI (robust matching + fallback) ----
   ci_lower <- ci_upper <- NA_real_
-
   has_ci_cols <- (inherits(object, "sbt_std_boot") || inherits(object, "sbt_ustd_boot")) &&
     all(c("boot.ci.lower","boot.ci.upper") %in% names(object))
 
   if (has_ci_cols) {
-    key   <- gsub("\\s+", "", param)  # 去掉所有空白
+    key   <- gsub("\\s+", "", param)
     rowid <- gsub("\\s+", "", paste0(object$lhs, object$op, object$rhs))
-    hits  <- which(rowid == key | object$label == param)  # 允许 label 命中
-
-    # 如有多组，可以在这里再加一行 group 过滤，例如：
-    # if ("group" %in% names(object)) hits <- hits[object$group[hits] == 1]
-
+    hits  <- which(rowid == key | object$label == param)
     if (length(hits) == 1) {
       ci_lower <- object$boot.ci.lower[hits]
       ci_upper <- object$boot.ci.upper[hits]
     }
   }
-
-  # t: 你的 bootstrap 向量；df_dens: density 数据框
   if (is.na(ci_lower) || is.na(ci_upper)) {
     level <- attr(object, "level"); if (is.null(level) || !is.numeric(level)) level <- 0.95
     alpha <- (1 - level) / 2
     qs <- stats::quantile(t, probs = c(alpha, 1 - alpha), na.rm = TRUE, names = FALSE)
     ci_lower <- qs[1]; ci_upper <- qs[2]
   }
-
-  # 把 CI 投到密度曲线高度，供 segments/text 使用
+  # 对应在密度曲线上的高度
+  ymax    <- max(df_dens$y)
   y_lower <- stats::approx(df_dens$x, df_dens$y, xout = ci_lower)$y
   y_upper <- stats::approx(df_dens$x, df_dens$y, xout = ci_upper)$y
-
-
-  # 密度高度 & 尺度
-  ymax <- max(df_dens$y)
-  y_lower <- if (!is.na(ci_lower)) stats::approx(df_dens$x, df_dens$y, xout = ci_lower)$y else NA_real_
-  y_upper <- if (!is.na(ci_upper)) stats::approx(df_dens$x, df_dens$y, xout = ci_upper)$y else NA_real_
 
   # 可只返回数据
   boot_data <- list(
@@ -179,21 +164,20 @@ gg_hist_qq_boot <- function(object,
   # --- 主图
   p <- ggplot(df_hist, aes(t))
   if (show_hist) {
-  p <- p + geom_histogram(aes(y = after_stat(density)),
-                          bins = bins, fill = bar_fill,
-                          color = bar_color, linewidth = 1.1)}
-
-
+    p <- p + geom_histogram(aes(y = after_stat(density)),
+                            bins = bins, fill = bar_fill,
+                            color = bar_color, linewidth = 1.1)
+  }
   p <- p +
-  geom_line(data = df_dens, aes(x = x, y = y),
-            linewidth = 1.2, color = dens_line_color) +
-  labs(title = paste0("Histogram of ", param), x = param, y = "Density") +
-  theme_minimal(base_family = "serif") +
-  theme(plot.title = element_text(face = "bold"),
-        axis.title = element_text(size = 11),
-        axis.text  = element_text(size = 9))
+    geom_line(data = df_dens, aes(x = x, y = y),
+              linewidth = 1.2, color = dens_line_color) +
+    labs(title = paste0("Histogram of ", param), x = param, y = "Density") +
+    theme_minimal(base_family = "serif") +
+    theme(plot.title = element_text(face = "bold"),
+          axis.title = element_text(size = 11),
+          axis.text  = element_text(size = 9))
 
-  # --- 横轴范围：仅少量边距；可选按分位数裁切
+  # --- x 轴范围：基于 t 的范围（或裁尾）+ 轻微 padding
   x_lim <- range(t, na.rm = TRUE)
   if (!is.null(trim_quantiles)) {
     stopifnot(length(trim_quantiles) == 2, trim_quantiles[1] < trim_quantiles[2])
@@ -201,33 +185,36 @@ gg_hist_qq_boot <- function(object,
     x_lim <- c(q[1], q[2])
   }
   xr_eff <- diff(x_lim)
-  p <- p +
-    coord_cartesian(xlim = c(x_lim[1] - 0.02 * xr_eff, x_lim[2] + 0.06 * xr_eff)) +
-    scale_x_continuous(expand = expansion(mult = c(0, 0)))
+  pad_l  <- 0.02 * xr_eff
+  pad_r  <- 0.06 * xr_eff  # 右侧多留一点给标签
+  p <- p + scale_x_continuous(
+    limits = c(x_lim[1] - pad_l, x_lim[2] + pad_r),
+    expand = expansion(mult = c(0, 0))
+  )
 
-  # --- CI 短虚线（红）+ 文本（靠近曲线，不压柱）
-  if (show_ci && !is.na(ci_lower)) {
+  # --- CI 短虚线 + 文本
+  if (show_ci && is.finite(ci_lower)) {
     p <- p +
       geom_segment(x = ci_lower, xend = ci_lower, y = 0, yend = y_lower,
                    linetype = "dashed", color = ci_line_color, linewidth = 1.0) +
       annotate("text",
-               x = ci_lower - 0.003 * xr_eff,           # 向左微移
-               y = y_lower + 0.10 * ymax,               # 曲线下方一点
+               x = ci_lower - 0.003 * xr_eff,
+               y = y_lower + 0.10 * ymax,
                label = paste0("L = ", round(ci_lower, ci_label_digits)),
                size = text_size, hjust = 1, fontface = 2, color = "black")
   }
-  if (show_ci && !is.na(ci_upper)) {
+  if (show_ci && is.finite(ci_upper)) {
     p <- p +
       geom_segment(x = ci_upper, xend = ci_upper, y = 0, yend = y_upper,
                    linetype = "dashed", color = ci_line_color, linewidth = 1.0) +
       annotate("text",
-               x = ci_upper + 0.015 * xr_eff,           # 向右微移
-               y = y_upper + 0.05 * ymax,               # 曲线上方一点
+               x = ci_upper + 0.015 * xr_eff,
+               y = y_upper + 0.05 * ymax,
                label = paste0("U = ", round(ci_upper, ci_label_digits)),
                size = text_size, hjust = 0, fontface = 2, color = "black")
   }
 
-  # --- 均值虚线 + 文本（贴线但不重叠）
+  # --- 均值虚线 + 文本
   if (show_mean) {
     p <- p +
       geom_vline(xintercept = t0, linetype = "dashed", color = "black", linewidth = 0.9) +
@@ -238,14 +225,14 @@ gg_hist_qq_boot <- function(object,
                size = text_size, hjust = 0, fontface = 2, color = "black")
   }
 
-  # --- SD 双向虚线箭头 + 文本（曲线中上部）
+  # --- SD 双向虚线箭头 + 文本
   if (show_sd_arrow) {
     arrow_y <- 0.58 * ymax
     p <- p +
       annotate("segment",
                x = t0 - sdv, xend = t0 + sdv, y = arrow_y, yend = arrow_y,
                linetype = "dashed", color = "grey40", linewidth = 0.9,
-               arrow = arrow(ends = "both", type = "closed", length = unit(5, "pt"))) +
+               arrow = grid::arrow(ends = "both", type = "closed", length = grid::unit(5, "pt"))) +
       annotate("text",
                x = t0 + sdv + 0.015 * xr_eff,
                y = arrow_y + 0.02 * ymax,
@@ -255,7 +242,7 @@ gg_hist_qq_boot <- function(object,
 
   if (identical(return, "ggplot")) return(p)
 
-  # --- 可选：QQ 图并排
+  # --- QQ 图：为避免额外依赖，直接顺序打印
   if (isTRUE(show_qq)) {
     q <- stats::qqnorm(t, plot.it = FALSE)
     dfqq <- data.frame(theoretical = q$x, sample = q$y)
@@ -268,14 +255,13 @@ gg_hist_qq_boot <- function(object,
       theme(plot.title = element_text(face = "bold"),
             axis.title = element_text(size = 11),
             axis.text  = element_text(size = 9))
-    if (requireNamespace("patchwork", quietly = TRUE)) {
-      print(p + patchwork::plot_spacer() + pqq + patchwork::plot_layout(widths = c(1, .05, 1)))
-    } else { print(p); print(pqq) }
+    print(p); print(pqq)
   } else {
     print(p)
   }
   invisible(p)
 }
+
 
 
 #' Scatterplot Matrix of Bootstrap Estimates (ggplot2 Version)
