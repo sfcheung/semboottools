@@ -32,7 +32,9 @@ Imports:
     boot,
     lavaan,
     psych,
-    lavaan.printer
+    lavaan.printer,
+    ggplot2,
+    GGally
 URL: https://Yangzhen1999.github.io/semboottools/
 BugReports: https://github.com/Yangzhen1999/semboottools/issues
 
