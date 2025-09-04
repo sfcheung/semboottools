@@ -34,7 +34,9 @@ Imports:
     psych,
     lavaan.printer,
     ggplot2,
-    GGally
+    GGally,
+    rlang,
+    patchwork
 URL: https://Yangzhen1999.github.io/semboottools/
 BugReports: https://github.com/Yangzhen1999/semboottools/issues
 

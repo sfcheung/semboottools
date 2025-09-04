@@ -45,36 +45,39 @@
 #'     \item `ci`: list with `lower`, `upper`, `y_lower`, `y_upper`.
 #'   }
 #'
-#' @param object A `lavaan` object with stored bootstrap results, or
-#'   an object of class `sbt_std_boot` (from [standardizedSolution_boot()]),
-#'   or `sbt_ustd_boot` (from [parameterEstimates_boot()]).
-#' @param param Character. Name of the parameter to plot
-#'   (as in `coef()` or `"lhs op rhs"` form, e.g., `"speed=~x9"`).
-#' @param standardized Logical. Whether to use standardized bootstrap estimates.
-#'   Ignored for `sbt_std_boot` / `sbt_ustd_boot`; required for `lavaan` objects.
-#' @param bins Integer. Number of histogram bins (if `show_hist = TRUE`). Default = 35.
-#' @param show_ci Logical. Draw CI short dashed lines and labels. Default = TRUE.
-#' @param show_mean Logical. Draw mean vertical dashed line and label. Default = TRUE.
-#' @param show_sd_arrow Logical. Draw ±SD arrows and labels. Default = TRUE.
-#' @param show_qq Logical. Add side-by-side QQ plot (uses `patchwork` if available). Default = TRUE.
-#' @param show_hist Logical. Draw histogram (otherwise density only). Default = TRUE.
-#' @param text_size Numeric. Font size for labels. Default = 3.
-#' @param ci_label_digits Integer. Digits for CI labels. Default = 3.
-#' @param mean_label_digits Integer. Digits for mean label. Default = 3.
-#' @param sd_label_digits Integer. Digits for SD label. Default = 3.
-#' @param sd_clip_to_density Logical. If TRUE, clip the SD double-arrow within the density curve. Default = TRUE.
-#' @param sd_arrow_height Numeric in (0,1]. Relative height (in units of ymax) for the SD arrow. Default = 0.58.
-#' @param trim_quantiles Length-2 numeric. Quantile range to trim x-axis (e.g., `c(.005, .995)`); NULL = no trimming.
-#' @param ci_line_color Color for CI short dashed lines. Default = `"#D62728"`.
-#' @param dens_line_color Color for density curve. Default = `"#8B0000CC"`.
-#' @param bar_fill Fill color for histogram (if `show_hist = TRUE`). Default = `"#5DADE233"`.
-#' @param bar_color Border color for histogram. Default = `"#1B4F72"`.
-#' @param enforce_serif Logical. If TRUE, use serif base family. Default = TRUE.
-#' @param theme_override A `ggplot2::theme()` to be added on top of the base theme. Default = NULL.
-#' @param dens_adjust Numeric ≥ 0. Adjust bandwidth for `stats::density()`. Default = 1.
-#' @param dens_from,dens_to Optional numeric. Force `from`/`to` range for `density()`. Default = NULL (use min/max of `t`).
-#' @param output One of `"draw"`, `"ggplot"`, or `"data"`. See Value. (Backward compatible with `return`.)
-#' @param ... Additional arguments passed to layers, e.g., `geom_density(adjust=...)`, `geom_histogram(...)`.
+#' @param object A `lavaan` object with stored bootstrap results, or an
+#'   `sbt_std_boot` (from `standardizedSolution_boot()`) or `sbt_ustd_boot`
+#'   (from `parameterEstimates_boot()`) object.
+#' @param param Character. Name of the parameter to plot (as in `coef()` or `"lhs op rhs"`).
+#' @param standardized Logical. Use standardized estimates. Ignored for `sbt_*` inputs.
+#' @param bins Integer. Number of histogram bins when `show_hist = TRUE`. Default `35`.
+#' @param show_ci Logical. Draw CI vertical dashed lines and labels. Default `TRUE`.
+#' @param show_mean Logical. Draw **point estimate** vertical line and label. Default `TRUE`.
+#' @param show_sd_arrow Logical. Draw ±SD double‐headed arrow and label. Default `TRUE`.
+#' @param show_qq Logical. Add a side-by-side QQ plot (uses `patchwork` if available). Default `TRUE`.
+#' @param show_hist Logical. Draw histogram (otherwise density only). Default `TRUE`.
+#' @param text_size Numeric. Font size for labels. Default `3`.
+#' @param ci_label_digits,mean_label_digits,sd_label_digits Integer digits for labels. Default `3`.
+#' @param sd_clip_to_density Logical. Clip SD arrow within density curve span. Default `TRUE`.
+#' @param sd_arrow_height Numeric in (0,1]. Relative height for the SD arrow. Default `0.58`.
+#' @param trim_quantiles Length-2 numeric. Trim x-axis by quantiles (e.g., `c(.01,.99)`). `NULL` = no trimming.
+#' @param ci_line_color Color for CI lines. Default `"#D62728"`.
+#' @param dens_line_color Color for density curve. Default `"#8B0000CC"`.
+#' @param bar_fill,bar_color Histogram fill/border colors. Defaults `"#5DADE233"` / `"#1B4F72"`.
+#' @param enforce_serif Logical. Use serif base family in the theme. Default `TRUE`.
+#' @param theme_override Optional `ggplot2::theme()` added on top of base theme.
+#' @param dens_adjust Numeric ≥ 0. Bandwidth adjust for `stats::density()`. Default `1`.
+#' @param dens_from,dens_to Optional numeric. Force `from`/`to` range for `density()`.
+#' @param show_boot_mean Logical. Draw **bootstrap mean** vertical line. Default `TRUE`.
+#' @param point_color Color for the **point estimate** line. Default `"#000000"`.      # <-- 新增，名称与代码一致
+#' @param boot_mean_color Color for the **bootstrap mean** line. Default `"#AA3377"`.
+#' @param output One of `"draw"`, `"ggplot"`, or `"data"`. What to return/draw. Default `"draw"`.
+#' @param return Deprecated. Backward-compatible alias of `output`; if supplied, it overrides `output`.  # <-- 新增
+#' @param ... Additional arguments passed to ggplot layers (e.g., `geom_histogram()`).
+#'
+#' @return If `output = "draw"`, draws the plot and (invisibly) returns the ggplot object;
+#'   if `output = "ggplot"`, returns the ggplot (no drawing); if `output = "data"`,
+#'   returns a list with `t`, `t0`, `sd`, `hist`, `dens`, and `ci` (class `"sbt_boot_plotdata"`).
 #'
 #' @references
 #' Rousselet, G. A., Pernet, C. R., & Wilcox, R. R. (2021).
@@ -88,13 +91,17 @@
 #' @importFrom ggplot2 theme element_text scale_x_continuous coord_cartesian
 #' @importFrom ggplot2 annotate geom_segment geom_vline geom_point geom_smooth
 #' @importFrom grid unit arrow
+#' @importFrom rlang .data as_label
+#' @importFrom patchwork wrap_plots plot_spacer
+
 #' @export
+
 gg_hist_qq_boot <- function(object,
                             param,
                             standardized = NULL,
                             bins = 35,
                             show_ci        = TRUE,
-                            show_mean      = TRUE,
+                            show_mean      = TRUE,   # point estimate line
                             show_sd_arrow  = TRUE,
                             show_qq        = TRUE,
                             show_hist      = TRUE,
@@ -114,10 +121,14 @@ gg_hist_qq_boot <- function(object,
                             dens_adjust = 1,
                             dens_from = NULL,
                             dens_to   = NULL,
+                            ## --- keep only one copy of these:
+                            show_boot_mean = TRUE,
+                            point_color     = "#000000",   # point estimate line color
+                            boot_mean_color = "#AA3377",
+                            ## ---
                             output = c("draw", "ggplot", "data"),
                             return = NULL,
-                            ...) {
-
+                            ...){
   if (is.null(return)) {
     output <- match.arg(output)
   } else {
@@ -140,7 +151,11 @@ gg_hist_qq_boot <- function(object,
     stop("Bootstrap draws are degenerate (all identical or non-numeric).")
   }
 
-  # --- Data frames
+  # --- Bootstrap mean and bias
+  boot_mean <- mean(t, na.rm = TRUE)
+  bias_hat  <- boot_mean - t0
+
+  # --- Density & Data frames
   d_obj <- stats::density(
     t,
     adjust = dens_adjust,
@@ -154,7 +169,7 @@ gg_hist_qq_boot <- function(object,
   df_dens <- data.frame(x = d_obj$x, y = d_obj$y)
   sdv     <- stats::sd(t, na.rm = TRUE)
 
-  # --- CI retrieval with robust matching (fallback to quantiles)
+  # --- CI retrieval (fallback to percentile)
   ci_list <- .ci_from_object_or_quantile(object, t, param)
   ci_lower <- ci_list$lower
   ci_upper <- ci_list$upper
@@ -168,7 +183,9 @@ gg_hist_qq_boot <- function(object,
   boot_data <- list(
     t = t, t0 = t0, sd = sdv, param = param,
     hist = df_hist, dens = df_dens,
-    ci = list(lower = ci_lower, upper = ci_upper, y_lower = y_lower, y_upper = y_upper)
+    ci = list(lower = ci_lower, upper = ci_upper, y_lower = y_lower, y_upper = y_upper),
+    boot_mean = boot_mean,
+    bias_hat  = bias_hat
   )
   class(boot_data) <- c("sbt_boot_plotdata", class(boot_data))
   if (identical(output, "data")) return(boot_data)
@@ -176,8 +193,8 @@ gg_hist_qq_boot <- function(object,
   # --- Base theme
   base_theme <- ggplot2::theme_minimal(base_family = if (enforce_serif) "serif" else NULL)
 
-  # --- Main figure (hist + density)
-  p <- ggplot2::ggplot(df_hist, ggplot2::aes(t))
+  # --- Main figure
+  p <- ggplot2::ggplot(df_hist, ggplot2::aes(.data$t))
   if (isTRUE(show_hist)) {
     p <- p + ggplot2::geom_histogram(
       ggplot2::aes(y = ggplot2::after_stat(density)),
@@ -185,7 +202,7 @@ gg_hist_qq_boot <- function(object,
     )
   }
   p <- p +
-    ggplot2::geom_line(data = df_dens, ggplot2::aes(x = x, y = y),
+    ggplot2::geom_line(data = df_dens, ggplot2::aes(x = .data$x, y = .data$y),
                        linewidth = 1.2, color = dens_line_color, ...) +
     ggplot2::labs(title = paste0("Histogram of ", param), x = param, y = "Density") +
     base_theme +
@@ -194,7 +211,7 @@ gg_hist_qq_boot <- function(object,
                    axis.text  = ggplot2::element_text(size = 9))
   if (!is.null(theme_override)) p <- p + theme_override
 
-  # --- X axis range and optional trimming
+  # --- X axis range and trimming
   x_lim <- range(t, na.rm = TRUE)
   if (!is.null(trim_quantiles)) {
     stopifnot(length(trim_quantiles) == 2, is.numeric(trim_quantiles),
@@ -206,15 +223,16 @@ gg_hist_qq_boot <- function(object,
   pad_l_r <- .x_pad(x_lim, left = 0.02, right = 0.06)
   xr_eff  <- diff(x_lim)
 
-  # --- Reserve small bottom corridor for CI labels (put below x-axis)
-  y_pad  <- 0.10 * ymax             # corridor height
-  y_lab  <- -0.40 * y_pad           # label vertical position inside corridor
+  # --- Reserve bottom corridor for CI labels
+  y_pad  <- 0.10 * ymax
+  y_lab  <- -0.40 * y_pad
 
   p <- p +
     ggplot2::scale_x_continuous(limits = pad_l_r, expand = ggplot2::expansion(mult = c(0, 0))) +
-    ggplot2::scale_y_continuous(limits = c(-y_pad, NA_real_), expand = ggplot2::expansion(mult = c(0, 0.02)))
+    ggplot2::scale_y_continuous(limits = c(-y_pad, NA_real_), expand = ggplot2::expansion(mult = c(0, 0.10))) +
+    ggplot2::coord_cartesian(clip = "off")
 
-  # --- CI vertical dashed lines + labels (below axis)
+  # --- CI vertical dashed lines + labels
   if (isTRUE(show_ci) && is.finite(ci_lower)) {
     p <- p +
       ggplot2::geom_segment(x = ci_lower, xend = ci_lower, y = 0, yend = y_lower,
@@ -234,26 +252,54 @@ gg_hist_qq_boot <- function(object,
                         size = text_size, hjust = 0.5, vjust = 1, fontface = 2, color = "black")
   }
 
-  # --- Mean dashed line + label (on the top)
+  # --- Optional vertical lines (point estimate & bootstrap mean) + legend (bottom)
+  lab_point <- sprintf("Point estimate = %.*f", mean_label_digits, t0)
+  lab_boot  <- sprintf("Bootstrap mean = %.*f", mean_label_digits, boot_mean)
+
+  labels <- character(0); xs <- numeric(0); cols <- character(0); ltys <- character(0)
   if (isTRUE(show_mean)) {
-    p <- p +
-      ggplot2::geom_vline(xintercept = t0, linetype = "dashed",
-                          color = "black", linewidth = 0.9) +
-      ggplot2::annotate("text",
-                        x = t0 + 0.01 * xr_eff,
-                        y = 1.10 * ymax,
-                        label = paste0("Sample mean = ", round(t0, mean_label_digits)),
-                        size = text_size, hjust = 0, fontface = 2, color = "black")
+    labels <- c(labels, lab_point); xs <- c(xs, t0); cols <- c(cols, point_color); ltys <- c(ltys, "dashed")
+  }
+  if (isTRUE(show_boot_mean)) {
+    labels <- c(labels, lab_boot); xs <- c(xs, boot_mean); cols <- c(cols, boot_mean_color); ltys <- c(ltys, "dashed")
   }
 
-  # --- SD double-headed arrow (optionally clipped to density)
+  if (length(labels) > 0) {
+    lines_df <- data.frame(
+      x    = xs,
+      type = factor(labels, levels = labels),
+      stringsAsFactors = FALSE
+    )
+    p <- p +
+      ggplot2::geom_vline(
+        data = lines_df,
+        ggplot2::aes(xintercept = .data$x, colour = .data$type, linetype = .data$type),
+        linewidth = 0.9, show.legend = TRUE
+      ) +
+      ggplot2::scale_colour_manual(values = stats::setNames(cols, labels), breaks = labels, name = NULL) +
+      ggplot2::scale_linetype_manual(values = stats::setNames(ltys, labels), breaks = labels, name = NULL) +
+      # 只保留 colour 图例的 override，关闭 linetype 图例以避免 duplicated override.aes
+      ggplot2::guides(
+        colour   = ggplot2::guide_legend(order = 1, nrow = 1, byrow = TRUE,
+                                         override.aes = list(linewidth = 1.3)),
+        linetype = "none"
+      ) +
+      ggplot2::theme(
+        legend.position   = "bottom",
+        legend.box        = "horizontal",
+        legend.margin = ggplot2::margin(t = -2, r = 2, b = 2, l = 2),
+        legend.key.width  = grid::unit(10, "pt"),
+        legend.key.height = grid::unit(6, "pt"),
+        legend.spacing.x  = grid::unit(4, "pt")
+      )
+  }
+
+  # --- SD double-headed arrow
   if (isTRUE(show_sd_arrow)) {
     arrow_y <- sd_arrow_height * ymax
-    # clip to density span at current height
     if (isTRUE(sd_clip_to_density)) {
       span <- .dens_span_at(arrow_y, df_dens$x, df_dens$y)
       if (anyNA(span)) {
-        # gradually lower until intersects or stop at 0.2*ymax
         for (k in seq(sd_arrow_height, 0.20, by = -0.05)) {
           arrow_y <- k * ymax
           span <- .dens_span_at(arrow_y, df_dens$x, df_dens$y)
@@ -283,12 +329,12 @@ gg_hist_qq_boot <- function(object,
   if (identical(output, "ggplot") && !isTRUE(show_qq)) return(p)
   if (!isTRUE(show_qq)) { print(p); return(invisible(p)) }
 
-  # side-by-side QQ
+  # QQ (side-by-side)
   q <- stats::qqnorm(t, plot.it = FALSE)
   dfqq <- data.frame(theoretical = q$x, sample = q$y)
-  pqq <- ggplot2::ggplot(dfqq, ggplot2::aes(theoretical, sample)) +
+  pqq <- ggplot2::ggplot(dfqq, ggplot2::aes(.data$theoretical, .data$sample)) +
     ggplot2::geom_point(shape = 21, size = 2, color = "#1B4F72", fill = bar_fill) +
-    ggplot2::geom_smooth(method = "lm", se = FALSE, linewidth = 0.9, color = dens_line_color) +
+    ggplot2::geom_smooth(method = "lm", se = FALSE, linewidth = 0.9, color = dens_line_color, formula = y ~ x) +
     ggplot2::labs(title = paste0("Normal QQ-Plot of ", param),
                   x = "Quantiles of Standard Normal", y = param) +
     base_theme +
@@ -303,7 +349,6 @@ gg_hist_qq_boot <- function(object,
     if (identical(output, "ggplot")) return(combo)
     print(combo); return(invisible(combo))
   } else {
-    # fallback: print sequentially
     print(p); print(pqq); return(invisible(p))
   }
 }
@@ -348,6 +393,7 @@ gg_hist_qq_boot <- function(object,
 #'   [standardizedSolution_boot()], [parameterEstimates_boot()]
 #'
 #' @export
+
 gg_scatter_boot <- function(object,
                             params,
                             standardized = NULL,
@@ -411,8 +457,11 @@ gg_scatter_boot <- function(object,
     p <- ggplot2::ggplot(data = data, mapping = mapping) +
       ggplot2::geom_point(size = point_size, alpha = point_alpha, color = point_color, ...)
     if (isTRUE(show_smooth)) {
-      p <- p + ggplot2::geom_smooth(method = smooth_method, se = smooth_se,
-                                    linewidth = 0.8, color = dens_color, ...)
+      # 显式公式并静默默认提示
+      p <- suppressMessages(
+        p + ggplot2::geom_smooth(method = smooth_method, se = smooth_se,
+                                 formula = y ~ x, linewidth = 0.8, color = dens_color, ...)
+      )
     }
     if (isTRUE(show_ellipse)) {
       p <- p + ggplot2::stat_ellipse(level = ellipse_level, linewidth = 0.8,
@@ -531,7 +580,6 @@ gg_scatter_boot <- function(object,
   print(gp)
   invisible(gp)
 }
-
 
 # ---------- Internal helpers (not exported) ----------
 

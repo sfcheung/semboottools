@@ -1,0 +1,76 @@
+---
+title: "gg_hist_qq_boot_and_gg_scatter_boot"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{gg_hist_qq_boot_and_gg_scatter_boot}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(semboottools)
+library(lavaan)
+```
+
+## Overview
+
+This vignette demonstrates two ggplot2-based utilities for visualizing bootstrap estimates stored/returned by **semboottools**:
+
+- `gg_hist_qq_boot()`: modular histogram/density with optional CI, mean/boot-mean lines, SD arrow, and a side-by-side QQ plot.  
+- `gg_scatter_boot()`: a scatterplot matrix (via **GGally**) for multiple parameters’ bootstrap draws.  
+
+Compared to base plots, these functions are **modern** (*ggplot2*) and **modular** (optional layers), and can **return the ggplot objects** for further customization.  
+
+**Dependencies:** Requires `ggplot2` (and `GGally` for the scatterplot matrix).  
+Optional: `patchwork` to arrange histogram and QQ plots side-by-side.
+
+
+## Example
+
+```{r}
+library(lavaan)
+
+# Simulate data
+set.seed(1234)
+n <- 200
+x <- runif(n) - 0.5
+m <- 0.4 * x + rnorm(n)
+y <- 0.3 * m + rnorm(n)
+dat <- data.frame(x, m, y)
+
+# Specify model
+model <- '
+  m ~ a * x
+  y ~ b * m + cp * x
+  ab := a * b
+'
+
+# Fit model
+fit0 <- sem(model, data = dat, fixed.x = FALSE)
+
+# Store bootstrap draws
+fit2 <- store_boot(
+  fit0,
+  R = 5000,
+  iseed = 2345)
+```
+
+### Basic usage: default settings
+```{r}
+gg_hist_qq_boot(fit2, param = "ab", standardized = FALSE)
+gg_scatter_boot(fit2, c("ab", "a", "b"), standardized = FALSE)
+```
+
+```{r}
+gg_hist_qq_boot(fit2, param = "ab", standardized = TRUE)
+gg_scatter_boot(fit2, c("ab", "a", "b"), standardized = TRUE)
+```
+
+

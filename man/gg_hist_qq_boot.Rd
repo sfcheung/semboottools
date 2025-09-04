@@ -30,67 +30,70 @@ gg_hist_qq_boot(
   dens_adjust = 1,
   dens_from = NULL,
   dens_to = NULL,
+  show_boot_mean = TRUE,
+  point_color = "#000000",
+  boot_mean_color = "#AA3377",
   output = c("draw", "ggplot", "data"),
   return = NULL,
   ...
 )
 }
 \arguments{
-\item{object}{A \code{lavaan} object with stored bootstrap results, or
-an object of class \code{sbt_std_boot} (from \code{\link[=standardizedSolution_boot]{standardizedSolution_boot()}}),
-or \code{sbt_ustd_boot} (from \code{\link[=parameterEstimates_boot]{parameterEstimates_boot()}}).}
+\item{object}{A \code{lavaan} object with stored bootstrap results, or an
+\code{sbt_std_boot} (from \code{standardizedSolution_boot()}) or \code{sbt_ustd_boot}
+(from \code{parameterEstimates_boot()}) object.}
 
-\item{param}{Character. Name of the parameter to plot
-(as in \code{coef()} or \code{"lhs op rhs"} form, e.g., \code{"speed=~x9"}).}
+\item{param}{Character. Name of the parameter to plot (as in \code{coef()} or \code{"lhs op rhs"}).}
 
-\item{standardized}{Logical. Whether to use standardized bootstrap estimates.
-Ignored for \code{sbt_std_boot} / \code{sbt_ustd_boot}; required for \code{lavaan} objects.}
+\item{standardized}{Logical. Use standardized estimates. Ignored for \verb{sbt_*} inputs.}
 
-\item{bins}{Integer. Number of histogram bins (if \code{show_hist = TRUE}). Default = 35.}
+\item{bins}{Integer. Number of histogram bins when \code{show_hist = TRUE}. Default \code{35}.}
 
-\item{show_ci}{Logical. Draw CI short dashed lines and labels. Default = TRUE.}
+\item{show_ci}{Logical. Draw CI vertical dashed lines and labels. Default \code{TRUE}.}
 
-\item{show_mean}{Logical. Draw mean vertical dashed line and label. Default = TRUE.}
+\item{show_mean}{Logical. Draw \strong{point estimate} vertical line and label. Default \code{TRUE}.}
 
-\item{show_sd_arrow}{Logical. Draw ±SD arrows and labels. Default = TRUE.}
+\item{show_sd_arrow}{Logical. Draw ±SD double‐headed arrow and label. Default \code{TRUE}.}
 
-\item{show_qq}{Logical. Add side-by-side QQ plot (uses \code{patchwork} if available). Default = TRUE.}
+\item{show_qq}{Logical. Add a side-by-side QQ plot (uses \code{patchwork} if available). Default \code{TRUE}.}
 
-\item{show_hist}{Logical. Draw histogram (otherwise density only). Default = TRUE.}
+\item{show_hist}{Logical. Draw histogram (otherwise density only). Default \code{TRUE}.}
 
-\item{text_size}{Numeric. Font size for labels. Default = 3.}
+\item{text_size}{Numeric. Font size for labels. Default \code{3}.}
 
-\item{ci_label_digits}{Integer. Digits for CI labels. Default = 3.}
+\item{ci_label_digits, mean_label_digits, sd_label_digits}{Integer digits for labels. Default \code{3}.}
 
-\item{mean_label_digits}{Integer. Digits for mean label. Default = 3.}
+\item{sd_clip_to_density}{Logical. Clip SD arrow within density curve span. Default \code{TRUE}.}
 
-\item{sd_label_digits}{Integer. Digits for SD label. Default = 3.}
+\item{sd_arrow_height}{Numeric in (0,1]. Relative height for the SD arrow. Default \code{0.58}.}
 
-\item{sd_clip_to_density}{Logical. If TRUE, clip the SD double-arrow within the density curve. Default = TRUE.}
+\item{trim_quantiles}{Length-2 numeric. Trim x-axis by quantiles (e.g., \code{c(.01,.99)}). \code{NULL} = no trimming.}
 
-\item{sd_arrow_height}{Numeric in (0,1]. Relative height (in units of ymax) for the SD arrow. Default = 0.58.}
+\item{ci_line_color}{Color for CI lines. Default \code{"#D62728"}.}
 
-\item{trim_quantiles}{Length-2 numeric. Quantile range to trim x-axis (e.g., \code{c(.005, .995)}); NULL = no trimming.}
+\item{dens_line_color}{Color for density curve. Default \code{"#8B0000CC"}.}
 
-\item{ci_line_color}{Color for CI short dashed lines. Default = \code{"#D62728"}.}
+\item{bar_fill, bar_color}{Histogram fill/border colors. Defaults \code{"#5DADE233"} / \code{"#1B4F72"}.}
 
-\item{dens_line_color}{Color for density curve. Default = \code{"#8B0000CC"}.}
+\item{enforce_serif}{Logical. Use serif base family in the theme. Default \code{TRUE}.}
 
-\item{bar_fill}{Fill color for histogram (if \code{show_hist = TRUE}). Default = \code{"#5DADE233"}.}
+\item{theme_override}{Optional \code{ggplot2::theme()} added on top of base theme.}
 
-\item{bar_color}{Border color for histogram. Default = \code{"#1B4F72"}.}
+\item{dens_adjust}{Numeric ≥ 0. Bandwidth adjust for \code{stats::density()}. Default \code{1}.}
 
-\item{enforce_serif}{Logical. If TRUE, use serif base family. Default = TRUE.}
+\item{dens_from, dens_to}{Optional numeric. Force \code{from}/\code{to} range for \code{density()}.}
 
-\item{theme_override}{A \code{ggplot2::theme()} to be added on top of the base theme. Default = NULL.}
+\item{show_boot_mean}{Logical. Draw \strong{bootstrap mean} vertical line. Default \code{TRUE}.}
 
-\item{dens_adjust}{Numeric ≥ 0. Adjust bandwidth for \code{stats::density()}. Default = 1.}
+\item{point_color}{Color for the \strong{point estimate} line. Default \code{"#000000"}.      # <-- 新增，名称与代码一致}
 
-\item{dens_from, dens_to}{Optional numeric. Force \code{from}/\code{to} range for \code{density()}. Default = NULL (use min/max of \code{t}).}
+\item{boot_mean_color}{Color for the \strong{bootstrap mean} line. Default \code{"#AA3377"}.}
 
-\item{output}{One of \code{"draw"}, \code{"ggplot"}, or \code{"data"}. See Value. (Backward compatible with \code{return}.)}
+\item{output}{One of \code{"draw"}, \code{"ggplot"}, or \code{"data"}. What to return/draw. Default \code{"draw"}.}
 
-\item{...}{Additional arguments passed to layers, e.g., \code{geom_density(adjust=...)}, \code{geom_histogram(...)}.}
+\item{return}{Deprecated. Backward-compatible alias of \code{output}; if supplied, it overrides \code{output}.  # <-- 新增}
+
+\item{...}{Additional arguments passed to ggplot layers (e.g., \code{geom_histogram()}).}
 }
 \value{
 \itemize{
@@ -106,6 +109,10 @@ Ignored for \code{sbt_std_boot} / \code{sbt_ustd_boot}; required for \code{lavaa
 \item \code{ci}: list with \code{lower}, \code{upper}, \code{y_lower}, \code{y_upper}.
 }
 }
+
+If \code{output = "draw"}, draws the plot and (invisibly) returns the ggplot object;
+if \code{output = "ggplot"}, returns the ggplot (no drawing); if \code{output = "data"},
+returns a list with \code{t}, \code{t0}, \code{sd}, \code{hist}, \code{dens}, and \code{ci} (class \code{"sbt_boot_plotdata"}).
 }
 \description{
 Produce diagnostic plots of bootstrap estimates using \strong{ggplot2}.
