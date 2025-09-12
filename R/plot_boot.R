@@ -248,26 +248,26 @@
 #' @export
 
 hist_qq_boot <- function(object,
-                      param,
-                      standardized = NULL,
-                      nclass = NULL,
-                      hist_color = "#5DADE233",
-                      hist_linewidth = 1.5,
-                      hist_border_color = "#1B4F72",
-                      density_line_type = "solid",
-                      density_line_color = "#8B0000CC",
-                      density_line_linewidth = 2,
-                      est_line_color = "#154360",
-                      est_line_type = "dashed",
-                      est_line_linewidth = 2,
-                      qq_dot_pch = 21,
-                      qq_dot_color = "#1B4F72",
-                      qq_dot_fill = "#5DADE233",
-                      qq_dot_size = 1.3,
-                      qq_line_color = "#8B0000CC",
-                      qq_line_linewidth = 2.1,
-                      qq_line_linetype = "solid"
-                      ) {
+                         param,
+                         standardized = NULL,
+                         nclass = NULL,
+                         hist_color = "#5DADE233",
+                         hist_linewidth = 1.5,
+                         hist_border_color = "#1B4F72",
+                         density_line_type = "solid",
+                         density_line_color = "#8B0000CC",
+                         density_line_linewidth = 2,
+                         est_line_color = "#154360",
+                         est_line_type = "dashed",
+                         est_line_linewidth = 2,
+                         qq_dot_pch = 21,
+                         qq_dot_color = "#1B4F72",
+                         qq_dot_fill = "#5DADE233",
+                         qq_dot_size = 1.3,
+                         qq_line_color = "#8B0000CC",
+                         qq_line_linewidth = 2.1,
+                         qq_line_linetype = "solid"
+) {
   if (is.null(standardized) &&
       !(inherits(object, "sbt_std_boot") ||
         inherits(object, "sbt_ustd_boot"))) {
@@ -285,8 +285,8 @@ hist_qq_boot <- function(object,
   if (any(is.na(boot_out))) {
     if (standardized) {
       stop("Bootstrap standardized estimates not found or not stored. ",
-            "Please call 'store_boot_est_std()' first if ",
-            "bootstrapping has been requested.")
+           "Please call 'store_boot_est_std()' first if ",
+           "bootstrapping has been requested.")
     } else {
       stop("Bootstrap estimates not found or not stored.")
     }
@@ -345,23 +345,23 @@ hist_qq_boot <- function(object,
         col = density_line_color,
         lty = density_line_type)
   abline(v = t0,
-          lwd = est_line_linewidth,
-          col = est_line_color,
-          lty = est_line_type)
+         lwd = est_line_linewidth,
+         col = est_line_color,
+         lty = est_line_type)
   qqnorm(t,
-          cex = qq_dot_size,
-          col = qq_dot_color,
-          pch = qq_dot_pch,
-          bg = qq_dot_fill,
-          main = paste0("Normal QQ-Plot of ",
-                param),
-          xlab = "Quantiles of Standard Normal",
-          ylab = param)
+         cex = qq_dot_size,
+         col = qq_dot_color,
+         pch = qq_dot_pch,
+         bg = qq_dot_fill,
+         main = paste0("Normal QQ-Plot of ",
+                       param),
+         xlab = "Quantiles of Standard Normal",
+         ylab = param)
   qqline(t,
-          lwd = qq_line_linewidth,
-          col = qq_line_color,
-          lty = qq_line_linetype
-          )
+         lwd = qq_line_linewidth,
+         col = qq_line_color,
+         lty = qq_line_linetype
+  )
   par(parold)
   invisible(object)
 }
@@ -373,89 +373,89 @@ hist_qq_boot <- function(object,
 param_find_boot <- function(object,
                             param,
                             standardized) {
-    boot_t0 <- NA
-    boot_t <- NA
-    is_sbt_std_boot <- inherits(object, "sbt_std_boot")
-    if (is_sbt_std_boot) {
-        standardized <- TRUE
-      }
-    is_sbt_ustd_boot <- inherits(object, "sbt_ustd_boot")
-    if (is_sbt_ustd_boot) {
-        standardized <- FALSE
-      }
-    if (standardized) {
-        if (is_sbt_std_boot) {
-            coef_names <- lavaan::lav_partable_labels(object)
-            boot_i <- attr(object, "boot_est_std")
-            if (is.null(boot_i)) {
-                stop("Bootstrap estimates not found in the object.")
-              }
-            colnames(boot_i) <- coef_names
-          } else {
-            boot_i <- get_boot_est_std(object)
-          }
-        if (param %in% colnames(boot_i)) {
-            if (is_sbt_std_boot) {
-                i <- match(param, colnames(boot_i))
-                boot_t0 <- object[i, "est.std"]
-              } else {
-                i <- match(param, std_names(object))
-                boot_t0 <- setNames(lavaan::standardizedSolution(object,
-                              se = FALSE)[i, "est.std"], param)
-              }
-            boot_t <- boot_i[, param, drop = TRUE]
-            out <- list(t0 = boot_t0,
-                        t = boot_t)
-          }
-      } else {
-        if (is_sbt_ustd_boot) {
-            coef_names <- lavaan::lav_partable_labels(object)
-            boot_i <- attr(object, "boot_est_ustd")
-            if (is.null(boot_i)) {
-                stop("Bootstrap estimates not found in the object.")
-              }
-          } else {
-            boot_i0 <- try(lavaan::lavInspect(object, "boot"), silent = TRUE)
-            boot_i1 <- object@external$sbt_boot_ustd
-            if (inherits(boot_i0, "try-error") && is.null(boot_i1)) {
-                stop("Bootstrapping estimates not found.")
-              }
-            if (!inherits(boot_i0, "try-error")) {
-              boot_i <- boot_i0
-            } else {
-              boot_i <- boot_i1
-            }
-          }
-        error_idx <- attr(boot_i, "error.idx")
-        if (length(error_idx) != 0) {
-            boot_i <- boot_i[-error_idx, ]
-          }
-        if (param %in% colnames(boot_i)) {
-            if (is_sbt_ustd_boot) {
-              i <- match(param, coef_names)
-              boot_t0 <- object[i, "est"]
-            } else {
-              boot_t0 <- lavaan::coef(object)[param]
-            }
-            boot_t <- boot_i[, param, drop = TRUE]
-          } else {
-            boot_i <- get_boot_def(object)
-            if (param %in% colnames(boot_i)) {
-                if (is_sbt_ustd_boot) {
-                  i <- match(param, object[, "label"])
-                  boot_t0 <- object[i, "est"]
-                } else {
-                  boot_t0 <- lavaan::coef(object,
-                                type = "user")[param]
-                }
-                boot_t <- boot_i[, param, drop = TRUE]
-              }
-          }
-      }
-    out <- list(t0 = boot_t0,
-                t = boot_t)
-    return(out)
+  boot_t0 <- NA
+  boot_t <- NA
+  is_sbt_std_boot <- inherits(object, "sbt_std_boot")
+  if (is_sbt_std_boot) {
+    standardized <- TRUE
   }
+  is_sbt_ustd_boot <- inherits(object, "sbt_ustd_boot")
+  if (is_sbt_ustd_boot) {
+    standardized <- FALSE
+  }
+  if (standardized) {
+    if (is_sbt_std_boot) {
+      coef_names <- lavaan::lav_partable_labels(object)
+      boot_i <- attr(object, "boot_est_std")
+      if (is.null(boot_i)) {
+        stop("Bootstrap estimates not found in the object.")
+      }
+      colnames(boot_i) <- coef_names
+    } else {
+      boot_i <- get_boot_est_std(object)
+    }
+    if (param %in% colnames(boot_i)) {
+      if (is_sbt_std_boot) {
+        i <- match(param, colnames(boot_i))
+        boot_t0 <- object[i, "est.std"]
+      } else {
+        i <- match(param, std_names(object))
+        boot_t0 <- setNames(lavaan::standardizedSolution(object,
+                                                         se = FALSE)[i, "est.std"], param)
+      }
+      boot_t <- boot_i[, param, drop = TRUE]
+      out <- list(t0 = boot_t0,
+                  t = boot_t)
+    }
+  } else {
+    if (is_sbt_ustd_boot) {
+      coef_names <- lavaan::lav_partable_labels(object)
+      boot_i <- attr(object, "boot_est_ustd")
+      if (is.null(boot_i)) {
+        stop("Bootstrap estimates not found in the object.")
+      }
+    } else {
+      boot_i0 <- try(lavaan::lavInspect(object, "boot"), silent = TRUE)
+      boot_i1 <- object@external$sbt_boot_ustd
+      if (inherits(boot_i0, "try-error") && is.null(boot_i1)) {
+        stop("Bootstrapping estimates not found.")
+      }
+      if (!inherits(boot_i0, "try-error")) {
+        boot_i <- boot_i0
+      } else {
+        boot_i <- boot_i1
+      }
+    }
+    error_idx <- attr(boot_i, "error.idx")
+    if (length(error_idx) != 0) {
+      boot_i <- boot_i[-error_idx, ]
+    }
+    if (param %in% colnames(boot_i)) {
+      if (is_sbt_ustd_boot) {
+        i <- match(param, coef_names)
+        boot_t0 <- object[i, "est"]
+      } else {
+        boot_t0 <- lavaan::coef(object)[param]
+      }
+      boot_t <- boot_i[, param, drop = TRUE]
+    } else {
+      boot_i <- get_boot_def(object)
+      if (param %in% colnames(boot_i)) {
+        if (is_sbt_ustd_boot) {
+          i <- match(param, object[, "label"])
+          boot_t0 <- object[i, "est"]
+        } else {
+          boot_t0 <- lavaan::coef(object,
+                                  type = "user")[param]
+        }
+        boot_t <- boot_i[, param, drop = TRUE]
+      }
+    }
+  }
+  out <- list(t0 = boot_t0,
+              t = boot_t)
+  return(out)
+}
 
 
 #' @details
@@ -535,8 +535,8 @@ scatter_boot <- function(object,
   if (any(sapply(boot_out_list, is.na))) {
     if (standardized) {
       stop("Bootstrap standardized estimates not found or not stored. ",
-            "Please call 'store_boot_est_std()' first if ",
-            "bootstrapping has been requested.")
+           "Please call 'store_boot_est_std()' first if ",
+           "bootstrapping has been requested.")
     } else {
       stop("Bootstrap estimates not found or not stored.")
     }
@@ -568,4 +568,3 @@ scatter_boot <- function(object,
 
   invisible(object)
 }
-

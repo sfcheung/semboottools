@@ -55,6 +55,9 @@ reference:
     the bootstrap estimates.
 - contents:
   - hist_qq_boot
+  - gg_hist_qq_boot
+  - gg_scatter_boot
+  - jab_after_boot
 # - title: Datasets
 #   desc: Datasets used in examples.
 # - contents:
