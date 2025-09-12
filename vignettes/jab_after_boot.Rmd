@@ -115,7 +115,7 @@ The diagnostic plot visualizes the same information:
 
 ```{r}
 # Run JAB analysis for b
-res1 <- jab_after_boot(
+res1 <- semboottools::jab_after_boot(
   fit2,
   param        = "b",       
   standardized = TRUE,
@@ -126,7 +126,7 @@ res1 <- jab_after_boot(
 )
 
 # Run JAB analysis for ab
-res2 <- jab_after_boot(
+res2 <- semboottools::jab_after_boot(
   fit2,
   param        = "ab",       
   standardized = TRUE,
