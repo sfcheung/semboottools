@@ -35,7 +35,8 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/hist_qq_boot_and_scatter_boot.html">hist_qq_boot_and_scatter_boot</a></li>
+<li><a class="dropdown-item" href="../articles/gg_hist_qq_boot_and_gg_scatter_boot.html">gg_hist_qq_boot_and_gg_scatter_boot</a></li>
+    <li><a class="dropdown-item" href="../articles/jab_after_boot.html">jab_after_boot</a></li>
     <li><a class="dropdown-item" href="../articles/parameterEstimates_boot.html">parameterEstimates_boot</a></li>
     <li><a class="dropdown-item" href="../articles/standardizedSolution_boot.html">semboottools::standardizedSolution_boot</a></li>
   </ul>
@@ -278,11 +279,15 @@ parameters</strong>.</p></li>
 </h4>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># For estimates of user-defined parameters,</span></span>
-<span><span class="fu"><a href="../reference/hist_qq_boot.html">hist_qq_boot</a></span><span class="op">(</span><span class="va">fit</span>, <span class="st">"ab"</span>, standardized <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/gg_hist_qq_boot.html">gg_hist_qq_boot</a></span><span class="op">(</span><span class="va">fit</span>, <span class="st">"ab"</span>, standardized <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Removed 2 rows containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; (`geom_bar()`).</span></span></code></pre></div>
 <p><img src="semboottools_files/figure-html/unnamed-chunk-6-1.png" width="576" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># For estimates in standardized solution,</span></span>
-<span><span class="fu"><a href="../reference/hist_qq_boot.html">hist_qq_boot</a></span><span class="op">(</span><span class="va">fit</span>, <span class="st">"ab"</span>, standardized <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/gg_hist_qq_boot.html">gg_hist_qq_boot</a></span><span class="op">(</span><span class="va">fit</span>, <span class="st">"ab"</span>, standardized <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Removed 2 rows containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; (`geom_bar()`).</span></span></code></pre></div>
 <p><img src="semboottools_files/figure-html/unnamed-chunk-6-2.png" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
@@ -290,11 +295,17 @@ parameters</strong>.</p></li>
 </h4>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># standardized solution</span></span>
-<span><span class="fu"><a href="../reference/hist_qq_boot.html">scatter_boot</a></span><span class="op">(</span><span class="va">fit</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"ab"</span><span class="op">)</span>, standardized <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/gg_scatter_boot.html">gg_scatter_boot</a></span><span class="op">(</span><span class="va">fit</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"ab"</span><span class="op">)</span>, standardized <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in ggplot2::geom_histogram(ggplot2::aes(y = ggplot2::after_stat(density)), : Ignoring unknown parameters: `size`</span></span>
+<span><span class="co">#&gt; Ignoring unknown parameters: `size`</span></span>
+<span><span class="co">#&gt; Ignoring unknown parameters: `size`</span></span></code></pre></div>
 <p><img src="semboottools_files/figure-html/unnamed-chunk-7-1.png" width="576"></p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># unstandardized solution</span></span>
-<span><span class="fu"><a href="../reference/hist_qq_boot.html">scatter_boot</a></span><span class="op">(</span><span class="va">fit</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"ab"</span><span class="op">)</span>, standardized <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/gg_scatter_boot.html">gg_scatter_boot</a></span><span class="op">(</span><span class="va">fit</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"ab"</span><span class="op">)</span>, standardized <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in ggplot2::geom_histogram(ggplot2::aes(y = ggplot2::after_stat(density)), : Ignoring unknown parameters: `size`</span></span>
+<span><span class="co">#&gt; Ignoring unknown parameters: `size`</span></span>
+<span><span class="co">#&gt; Ignoring unknown parameters: `size`</span></span></code></pre></div>
 <p><img src="semboottools_files/figure-html/unnamed-chunk-7-2.png" width="576"></p>
 </div>
 </div>
