@@ -98,16 +98,16 @@ To examine the distribution of bootstrap estimates, two functions are available:
 
 ```{r, fig.width = 6, fig.height = 3, fig.align='center'}
 # For estimates of user-defined parameters,
-hist_qq_boot(fit, "ab", standardized = FALSE)
+gg_hist_qq_boot(fit, "ab", standardized = FALSE)
 # For estimates in standardized solution,
-hist_qq_boot(fit, "ab", standardized = TRUE)
+gg_hist_qq_boot(fit, "ab", standardized = TRUE)
 ```
 
 ### Scatterplot Matrix: `scatter_boot()`
 
 ```{r}
 # standardized solution
-scatter_boot(fit, c("a", "b", "ab"), standardized = TRUE)
+gg_scatter_boot(fit, c("a", "b", "ab"), standardized = TRUE)
 # unstandardized solution
-scatter_boot(fit, c("a", "b", "ab"), standardized = FALSE)
+gg_scatter_boot(fit, c("a", "b", "ab"), standardized = FALSE)
 ```
