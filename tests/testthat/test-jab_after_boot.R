@@ -77,7 +77,7 @@ testthat::test_that("jab_after_boot() works for unstandardized (:= and free/var 
   testthat::expect_lte(nrow(res_ab$cases_summary), 5L)
 
   # ---- 分支 B：自由参数/方差列（自动选择存在的列名） ----
-  ub <- parameterEstimates_boot(fit2)
+  ub <- suppressWarnings(parameterEstimates_boot(fit2))
   cols <- colnames(attr(ub, "boot_est_ustd"))
   # 你的实现里自由路径用 label（a,b,cp），方差用 lhs~~lhs
   cand <- intersect(c("a","b","cp"), cols)
@@ -138,7 +138,7 @@ testthat::test_that("jab_after_boot() standardized branch + ggplot2 plotting", {
   fit2 <- store_boot(fit0, R = R_boot, iseed = 9876, keep.idx = TRUE)
 
   # ---- 自动挑一个标准化列名（优先回归，其次载荷，再次方差） ----
-  std <- standardizedSolution_boot(fit2)
+  std <- suppressWarnings(standardizedSolution_boot(fit2))
   std_cols <- colnames(attr(std, "boot_est_std"))
 
   # 回归：包含 "~" 且不包含 "=~" 或 "~~"
@@ -212,7 +212,14 @@ testthat::test_that("jab_after_boot() gives informative error for unknown parame
   fit2 <- store_boot(fit0, R = 120, iseed = 1111, keep.idx = TRUE)
 
   testthat::expect_error(
-    jab_after_boot(fit2, param = "NOT_A_PARAM", standardized = TRUE, verbose = FALSE),
+    suppressWarnings(
+      jab_after_boot(
+        fit2,
+        param = "NOT_A_PARAM",
+        standardized = TRUE,
+        verbose = FALSE
+      )
+    ),
     "not found|Cannot locate|Could not resolve",
     ignore.case = TRUE
   )
