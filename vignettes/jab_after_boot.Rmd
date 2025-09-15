@@ -28,7 +28,7 @@ library(lavaan)
 The function `jab_after_boot()` accepts the following arguments:
 
 | Argument | Description |
-|-------------------------|----------------------------------------------|
+|----|----|
 | `fit` | A fitted `lavaan` object for which `store_boot()` has been called with `keep.idx = TRUE`. Must contain `fit@external$sbt_boot_ustd` (with `boot.idx` attribute), and typically `fit@external$sbt_boot_std`. |
 | `param` | The target parameter to diagnose. Can be given as (i) `"lhs op rhs"` (e.g., `"Y ~ X"`, `"Y ~~ Y"`, `"X =~ x1"`), (ii) a user-defined `":="` label (e.g., `"ab"`), or (iii) a parameter label (e.g., `"b"`). |
 | `standardized` | Logical. If `TRUE`, use standardized bootstrap estimates (`standardizedSolution_boot()`); if `FALSE`, use unstandardized (`parameterEstimates_boot()`). |
@@ -48,7 +48,7 @@ The function `jab_after_boot()` accepts the following arguments:
 The function returns a list with the following components:
 
 | Component | Description |
-|-------------------------|----------------------------------------------|
+|----|----|
 | `param` | The target parameter string. |
 | `standardized` | Logical flag indicating whether standardized bootstrap was used. |
 | `full_summary` | Data frame with the summary statistics (mean, SE, CI) for the full bootstrap distribution (`scope = "ALL"`). |
