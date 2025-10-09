@@ -69,10 +69,10 @@
 #' @param dens_adjust Numeric ≥ 0. Bandwidth adjust for `stats::density()`. Default `1`.
 #' @param dens_from,dens_to Optional numeric. Force `from`/`to` range for `density()`.
 #' @param show_boot_mean Logical. Draw **bootstrap mean** vertical line. Default `TRUE`.
-#' @param point_color Color for the **point estimate** line. Default `"#000000"`.      # <-- 新增，名称与代码一致
+#' @param point_color Color for the **point estimate** line. Default `"#000000"`.
 #' @param boot_mean_color Color for the **bootstrap mean** line. Default `"#AA3377"`.
 #' @param output One of `"draw"`, `"ggplot"`, or `"data"`. What to return/draw. Default `"draw"`.
-#' @param return Deprecated. Backward-compatible alias of `output`; if supplied, it overrides `output`.  # <-- 新增
+#' @param return Deprecated. Backward-compatible alias of `output`; if supplied, it overrides `output`.
 #' @param ... Additional arguments passed to ggplot layers (e.g., `geom_histogram()`).
 #'
 #' @return If `output = "draw"`, draws the plot and (invisibly) returns the ggplot object;

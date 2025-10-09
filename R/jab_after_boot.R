@@ -23,9 +23,9 @@
 #' @param min_keep Integer. Minimum number of bootstrap replicates kept in each LOO subset;
 #'   default `max(30, floor(0.2 * B))`.
 #' @param plot Logical. If `TRUE`, draw a JAB diagnostic plot.
-#' @param plot_engine Character. Plot engine for `plot = TRUE`. One of `"ggplot2"` or `"base"`.   # <-- 新增
+#' @param plot_engine Character. Plot engine for `plot = TRUE`. One of `"ggplot2"` or `"base"`.
 #'   Default `"ggplot2"` if available, otherwise `"base"`.
-#' @param ylab_override Optional character. Override the default y-axis label in the plot.        # <-- 新增
+#' @param ylab_override Optional character. Override the default y-axis label in the plot.
 #' @param verbose Logical. If `TRUE`, print compact summaries.
 #' @param font_family Character. Graphics font family (e.g., `"serif"`, `"sans"`, `"Times New Roman"`).
 #'
