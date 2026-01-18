@@ -35,10 +35,10 @@ default \code{max(30, floor(0.2 * B))}.}
 
 \item{plot}{Logical. If \code{TRUE}, draw a JAB diagnostic plot.}
 
-\item{plot_engine}{Character. Plot engine for \code{plot = TRUE}. One of \code{"ggplot2"} or \code{"base"}.   # <-- 新增
+\item{plot_engine}{Character. Plot engine for \code{plot = TRUE}. One of \code{"ggplot2"} or \code{"base"}.
 Default \code{"ggplot2"} if available, otherwise \code{"base"}.}
 
-\item{ylab_override}{Optional character. Override the default y-axis label in the plot.        # <-- 新增}
+\item{ylab_override}{Optional character. Override the default y-axis label in the plot.}
 
 \item{verbose}{Logical. If \code{TRUE}, print compact summaries.}
 

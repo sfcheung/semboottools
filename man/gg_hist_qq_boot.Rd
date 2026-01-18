@@ -85,13 +85,13 @@ gg_hist_qq_boot(
 
 \item{show_boot_mean}{Logical. Draw \strong{bootstrap mean} vertical line. Default \code{TRUE}.}
 
-\item{point_color}{Color for the \strong{point estimate} line. Default \code{"#000000"}.      # <-- 新增，名称与代码一致}
+\item{point_color}{Color for the \strong{point estimate} line. Default \code{"#000000"}.}
 
 \item{boot_mean_color}{Color for the \strong{bootstrap mean} line. Default \code{"#AA3377"}.}
 
 \item{output}{One of \code{"draw"}, \code{"ggplot"}, or \code{"data"}. What to return/draw. Default \code{"draw"}.}
 
-\item{return}{Deprecated. Backward-compatible alias of \code{output}; if supplied, it overrides \code{output}.  # <-- 新增}
+\item{return}{Deprecated. Backward-compatible alias of \code{output}; if supplied, it overrides \code{output}.}
 
 \item{...}{Additional arguments passed to ggplot layers (e.g., \code{geom_histogram()}).}
 }
