@@ -6,7 +6,7 @@
 \alias{semboottools-package}
 \title{semboottools: Bootstrapping Helpers for Structural Equation Modelling}
 \description{
-A collection of helper functions for forming bootstrapping confidence intervals and examining bootstrap estimates in structural equation modelling. Currently supports models fitted by the 'lavaan' package by Rosseel (2012) \doi{10.18637/jss.v048.i02}.
+A collection of helper functions for forming bootstrapping confidence intervals and examining bootstrap estimates in structural equation modelling, introduced in Yang and Cheung (2026) \doi{ 10.3758/s13428-025-02911-z} The function currently support models fitted by the 'lavaan' package by Rosseel (2012) \doi{10.18637/jss.v048.i02}.
 }
 \seealso{
 Useful links:

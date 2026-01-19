@@ -1,0 +1,16 @@
+citHeader("To cite the 'semboottools' package in publications use:")
+
+bibentry(
+  bibtype = "Article",
+	title = "Forming bootstrap confidence intervals and examining bootstrap distributions of standardized coefficients in structural equation modelling: A simplified workflow using the R package semboottools",
+  volumne = "58",
+	url = "https://doi.org/10.3758/s13428-025-02911-z",
+	doi = "10.3758/s13428-025-02911-z",
+	language = "en",
+  number = "2",
+	journal = "Behavior Research Methods",
+	author = c(as.person("W. Yang"),
+             as.person("S. F. Cheung")),
+	year = "2026",
+  pages = "38"
+)
