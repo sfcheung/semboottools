@@ -95,13 +95,15 @@ fit0 <- sem(model,
             fixed.x = FALSE)
 
 # Store bootstrap draws using `store_boot()`.
+# `R`, the number of bootstrap samples, should be ≥2000 in real studies.
 # `parallel` should be used unless fitting the model is fast.
-# `iseed` is set to make the results reproducible.
+# Set `ncpus` to a larger value or omit it in real studies.
 # Before calling `jab_after_boot()`, you **must** re-run the model with store_boot(keep.idx = TRUE).  This is crucial: without `keep.idx = TRUE`, the bootstrap index matrix (boot.idx) will not be saved, and JAB cannot compute leave-one-out subdistributions.
 
 fit2 <- store_boot(
           fit0,
-          R = 5000,
+          R = 500,
+          ncpus = 2,
           iseed = 2345,
           keep.idx = TRUE,
           parallel = "snow"

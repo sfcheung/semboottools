@@ -98,14 +98,17 @@ are desired.
 
 ```{r}
 # Ensure bootstrap estimates are stored
+# `R`, the number of bootstrap samples, should be ≥2000 in real studies.
 # `parallel` should be used unless fitting the model is fast.
+# Set `ncpus` to a larger value or omit it in real studies.
 # `iseed` is set to make the results reproducible.
 fit <- sem(mod,
            data = dat,
            fixed.x = FALSE)
 fit <- store_boot(fit,
-                  R = 2000,
+                  R = 500,
                   parallel = "snow",
+                  ncpus = 2,
                   iseed = 1248)
 est_boot <- parameterEstimates_boot(fit)
 print(est_boot)

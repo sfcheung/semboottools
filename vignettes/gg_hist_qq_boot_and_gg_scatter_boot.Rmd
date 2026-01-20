@@ -59,14 +59,17 @@ model <- '
 fit0 <- sem(model, data = dat, fixed.x = FALSE)
 
 # Store bootstrap draws
+# `R`, the number of bootstrap samples, should be ≥2000 in real studies.
 # `parallel` should be used unless fitting the model is fast.
+# Set `ncpus` to a larger value or omit it in real studies.
 # `iseed` is set to make the results reproducible.
 
 fit2 <- store_boot(
   fit0,
-  R = 5000,
+  R = 500,
   iseed = 2345,
-  parallel = "snow")
+  parallel = "snow",
+  ncpus = 2)
 ```
 
 ### Basic Usage: Default Settings

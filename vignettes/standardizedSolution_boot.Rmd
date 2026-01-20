@@ -95,12 +95,14 @@ are requested when fitting the model
 ```{r}
 # `bootstrap` should use ≥2000 in real studies.
 # `parallel` should be used unless fitting the model is fast.
+# Set `ncpus` to a larger value or omit it in real studies.
 # `iseed` is set to make the results reproducible.
 fit <- sem(mod,
            data = dat,
            se = "boot",
-           bootstrap = 2000,
+           bootstrap = 500,
            parallel = "snow",
+           ncpus = 2,
            iseed = 1248)
 std_boot <- standardizedSolution_boot(fit)
 print(std_boot)
@@ -131,14 +133,17 @@ of `store_boot()`.
 ```{r}
 # The function `store_boot` also does not require
 # 'se = "boot"' when fitting the model.
+# `R`, the number of bootstrap samples, should be ≥2000 in real studies.
 # `parallel` should be used unless fitting the model is fast.
+# Set `ncpus` to a larger value or omit it in real studies.
 # `iseed` is set to make the results reproducible.
 fit2 <- sem(mod,
             data = dat,
             fixed.x = FALSE)
 fit2 <- store_boot(fit2,
-                   R = 2000,
+                   R = 500,
                    parallel = "snow",
+                   ncpus = 2,
                    iseed = 1248)
 std_boot2 <- standardizedSolution_boot(fit2)
 print(std_boot)
