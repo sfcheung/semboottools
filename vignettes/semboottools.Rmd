@@ -151,5 +151,5 @@ gg_scatter_boot(fit,
                 standardized = FALSE)
 ```
 
-# Reference(s)
+## Reference(s)
 
