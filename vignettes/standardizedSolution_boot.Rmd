@@ -5,6 +5,8 @@ vignette: >
   %\VignetteIndexEntry{semboottools::standardizedSolution_boot}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+bibliography: references.bib
+csl: apa.csl
 ---
 
 ```{r, include = FALSE}
@@ -16,6 +18,8 @@ knitr::opts_chunk$set(
 
 This vignette is a quick guide
 to use `standardizedSolution_boot()`
+in the package [`semboottools`](https://yangzhen1999.github.io/semboottools/),
+described in @yang_forming_2026,
 to form bootstrap confidence intervals
 for the standardized solution in a model
 fitted by `lavaan`.
@@ -89,7 +93,7 @@ are requested when fitting the model
 
 ```{r}
 # `bootstrap` should use ≥2000 in real studies.
-# `parallel` should be used unless fit is quick.
+# `parallel` should be used unless fitting the model is fast.
 # `iseed` is set to make the results reproducible.
 fit <- sem(mod,
            data = dat,
@@ -126,7 +130,7 @@ of `store_boot()`.
 ```{r}
 # The function `store_boot` also does not require
 # 'se = "boot"' when fitting the model.
-# `parallel` should be used unless fit is quick.
+# `parallel` should be used unless fitting the model is fast.
 # `iseed` is set to make the results reproducible.
 fit2 <- sem(mod,
             data = dat,
@@ -196,3 +200,5 @@ print(std_boot,
       boot_ci_only = TRUE,
       nd = 5)
 ```
+
+## Reference(s)
