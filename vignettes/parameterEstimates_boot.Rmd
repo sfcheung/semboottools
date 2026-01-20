@@ -5,6 +5,8 @@ vignette: >
   %\VignetteIndexEntry{parameterEstimates_boot}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+bibliography: references.bib
+csl: apa.csl
 ---
 
 ```{r, include = FALSE}
@@ -13,6 +15,16 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
+
+This vignette is a quick guide
+to use `parameterEstimates_boot()`
+in the package [`semboottools`](https://yangzhen1999.github.io/semboottools/),
+described in @yang_forming_2026,
+to form bootstrap confidence intervals
+for the unstandardized estimates in a model
+fitted by `lavaan`.
+
+The following two packages are needed:
 
 ```{r setup}
 library(semboottools)
@@ -73,28 +85,53 @@ mod <- '
 ```
 
 ### Basic usage: default settings
+
+The function `parameterEstimates_boot()`
+can be used to add bootstrap estimates
+to an output of `lavaan`.
+This method is useful when both the default
+standard errors and *p*-values, such as
+those by maximum likelihood (ML), and the
+bootstrap standard errors and *p*-values
+are desired.
+
 ```{r}
 # Ensure bootstrap estimates are stored
-fit <- sem(mod, data = dat, fixed.x = FALSE)
-fit <- store_boot(fit) 
+# `parallel` should be used unless fitting the model is fast.
+# `iseed` is set to make the results reproducible.
+fit <- sem(mod,
+           data = dat,
+           fixed.x = FALSE)
+fit <- store_boot(fit,
+                  R = 2000,
+                  parallel = "snow",
+                  iseed = 1248)
 est_boot <- parameterEstimates_boot(fit)
 print(est_boot)
 ```
 
 ### parameterEstimates_boot(): Different Options
 
+Additional options to customize the
+output of `parameterEstimates_boot()`.
+
 ```{r eval = FALSE}
 
 # Change confidence level to 99%
-est_boot <- parameterEstimates_boot(fit, level = 0.99)
+est_boot <- parameterEstimates_boot(fit,
+                                    level = 0.99)
 # Use bias-corrected (BC) bootstrap confidence intervals
-est_boot <- parameterEstimates_boot(fit, boot_ci_type = "bc")
+est_boot <- parameterEstimates_boot(fit,
+                                    boot_ci_type = "bc")
 # Turn off asymmetric bootstrap p-values
-est_boot <- parameterEstimates_boot(fit, boot_pvalue = FALSE)
+est_boot <- parameterEstimates_boot(fit,
+                                    boot_pvalue = FALSE)
 # Do not save bootstrap estimates (for memory saving)
-est_boot <- parameterEstimates_boot(fit, save_boot_est = FALSE)
+est_boot <- parameterEstimates_boot(fit,
+                                    save_boot_est = FALSE)
 # Compute and display bootstrap-to-original CI ratio
-est_boot <- parameterEstimates_boot(fit, boot_org_ratio = TRUE)
+est_boot <- parameterEstimates_boot(fit,
+                                    boot_org_ratio = TRUE)
 # Combine options: BC CI, 99% level, no p-values
 est_boot <- parameterEstimates_boot(fit,
                                     level = 0.99,
@@ -102,17 +139,29 @@ est_boot <- parameterEstimates_boot(fit,
                                     boot_pvalue = FALSE)
 ```
 
-### print(): Different Options
+### print(): Options
+
+Additional options to customize the
+printout of the
+output of `parameterEstimates_boot()`.
 
 ```{r eval = FALSE}
 # Print with more decimal places (e.g., 5 digits)
-print(est_boot, nd = 5)
+print(est_boot,
+      nd = 5)
 # Print in lavaan-style text format (similar to summary())
-print(est_boot, output = "text")
+print(est_boot,
+      output = "text")
 # Print as a clean data frame table
-print(est_boot, output = "table")
+print(est_boot,
+      output = "table")
 # Drop specific columns (e.g., "Z") in lavaan.printer format
-print(est_boot, drop_cols = "Z")
+print(est_boot,
+      drop_cols = "Z")
 # Combine options: 5 decimal digits, text format
-print(est_boot, nd = 5, output = "text")
+print(est_boot,
+      nd = 5,
+      output = "text")
 ```
+
+## Reference(s)
