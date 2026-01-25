@@ -8,7 +8,7 @@
 [![R-CMD-check](https://github.com/Yangzhen1999/semboottools/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Yangzhen1999/semboottools/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-(Version 0.1.1,1, updated on 2026-01-17, [release history](https://Yangzhen1999.github.io/semboottools/news/index.html))
+(Version 0.1.2, updated on 2026-01-25, [release history](https://Yangzhen1999.github.io/semboottools/news/index.html))
 
 # semboottools: Bootstrapping Helpers For Structural Equation Modelling
 
@@ -51,5 +51,5 @@ remotes::install_github("Yangzhen1999/semboottools")
 # Issues
 
 If you have any suggestions and found any
-bugs, please feel feel to open a GitHub
+bugs, please feel free to open a GitHub
 issue. Thanks.
