@@ -1,11 +1,16 @@
-# semboottools 0.1.1.1
+# semboottools 0.1.2
 
 ## Miscellaneous
 
-- Use `linewidth` instead of `size` in
+- Used `linewidth` instead of `size` in
   `ggplot2::geom_histogram()` to
   suppress a warning. (0.1.1.1)
 
+- Updated vignettes to use
+  `iseed` and `ncpus`. (0.1.2)
+
+- Updated references
+  in vignettes.
 
 # semboottools 0.1.1
 ## New functions
