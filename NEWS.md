@@ -1,3 +1,17 @@
+# semboottools 0.1.2
+
+## Miscellaneous
+
+- Used `linewidth` instead of `size` in
+  `ggplot2::geom_histogram()` to
+  suppress a warning. (0.1.1.1)
+
+- Updated vignettes to use
+  `iseed` and `ncpus`. (0.1.2)
+
+- Updated references
+  in vignettes.
+
 # semboottools 0.1.1
 ## New functions
 - jab_after_boot(): Computes Jackknife-after-Bootstrap influence values for a single parameter from a lavaan bootstrap model, with an optional diagnostic plot.

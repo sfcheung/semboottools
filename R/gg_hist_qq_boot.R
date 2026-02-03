@@ -537,7 +537,7 @@ gg_scatter_boot <- function(object,
       ggplot2::ggplot(data = data, mapping = mapping) +
         ggplot2::geom_histogram(ggplot2::aes(y = ggplot2::after_stat(density)),
                                 bins = bins, fill = hist_fill,
-                                colour = hist_color, size = hist_border_size, ...) +
+                                colour = hist_color, linewidth = hist_border_size, ...) +
         ggplot2::geom_density(color = dens_color, linewidth = 1.0, ...) +
         { if (isTRUE(show_mean_diag))
           ggplot2::geom_vline(xintercept = mu, color = mean_line_color,

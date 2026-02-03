@@ -5,11 +5,10 @@ vignette: >
   %\VignetteIndexEntry{jab_after_boot}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+bibliography: references.bib
+csl: apa.csl
+link-citations: true
 ---
-
-## Overview
-
-This vignette demonstrates how to use `jab_after_boot()` to compute **Jackknife-after-Bootstrap (JAB)** influence values for a single model parameter from a `lavaan` fit with stored bootstrap replicates (including`boot.idx`). The function summarizes the full bootstrap distribution and the leave-one-out (LOO) subdistributions, ranks influential observations, and (optionally) plots a diagnostic figure.
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
@@ -17,6 +16,18 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
+
+## Overview
+
+This vignette demonstrates how to use `jab_after_boot()`
+in the package [`semboottools`](https://yangzhen1999.github.io/semboottools/) [@yang_forming_2026] to compute **Jackknife-after-Bootstrap (JAB)** influence values
+[@efron_introduction_1993]
+for a single model parameter from
+a `lavaan` model fitted with stored bootstrap replicates (including `boot.idx`).
+The function summarizes the full bootstrap distribution and the leave-one-out (LOO) subdistributions, ranks influential observations, and (optionally) plots a diagnostic figure.
+
+The following two packages are needed:
+
 
 ```{r setup}
 library(semboottools)
@@ -79,17 +90,24 @@ model <- '
 '
 
 # Fit model
-fit0 <- sem(model, data = dat, fixed.x = FALSE)
+fit0 <- sem(model,
+            data = dat,
+            fixed.x = FALSE)
 
-# Store bootstrap draws
+# Store bootstrap draws using `store_boot()`.
+# `R`, the number of bootstrap samples, should be ≥2000 in real studies.
+# `parallel` should be used unless fitting the model is fast.
+# Set `ncpus` to a larger value or omit it in real studies.
 # Before calling `jab_after_boot()`, you **must** re-run the model with store_boot(keep.idx = TRUE).  This is crucial: without `keep.idx = TRUE`, the bootstrap index matrix (boot.idx) will not be saved, and JAB cannot compute leave-one-out subdistributions.
 
 fit2 <- store_boot(
-  fit0,
-  R = 5000,
-  iseed = 2345,        
-  keep.idx = TRUE           
-)
+          fit0,
+          R = 500,
+          ncpus = 2,
+          iseed = 2345,
+          keep.idx = TRUE,
+          parallel = "snow"
+        )
 ```
 
 When you run `jab_after_boot()` with `verbose = TRUE`, two blocks of output are shown:
@@ -117,7 +135,7 @@ The diagnostic plot visualizes the same information:
 # Run JAB analysis for b
 res1 <- semboottools::jab_after_boot(
   fit2,
-  param        = "b",       
+  param        = "b",
   standardized = TRUE,
   top_k        = 5,
   plot         = TRUE,
@@ -128,7 +146,7 @@ res1 <- semboottools::jab_after_boot(
 # Run JAB analysis for ab
 res2 <- semboottools::jab_after_boot(
   fit2,
-  param        = "ab",       
+  param        = "ab",
   standardized = TRUE,
   top_k        = 10,
   plot         = TRUE
@@ -136,5 +154,3 @@ res2 <- semboottools::jab_after_boot(
 ```
 
 ## References
-
--   Efron, B., & Tibshirani, R. J. (1993). *An Introduction to the Bootstrap*. Chapman & Hall.
