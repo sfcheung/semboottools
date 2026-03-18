@@ -41,7 +41,7 @@ gg_scatter_boot(
 \item{object}{A bootstrap result object of class
 \code{"sbt_std_boot"} or \code{"sbt_ustd_boot"}.}
 
-\item{params}{Character vector of parameter names to plot (≥ 2).}
+\item{params}{Character vector of parameter names to plot ( >= 2).}
 
 \item{standardized}{Logical; whether to use standardized estimates.}
 

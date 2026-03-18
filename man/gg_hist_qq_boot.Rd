@@ -79,7 +79,7 @@ gg_hist_qq_boot(
 
 \item{theme_override}{Optional \code{ggplot2::theme()} added on top of base theme.}
 
-\item{dens_adjust}{Numeric ≥ 0. Bandwidth adjust for \code{stats::density()}. Default \code{1}.}
+\item{dens_adjust}{Numeric >= 0. Bandwidth adjust for \code{stats::density()}. Default \code{1}.}
 
 \item{dens_from, dens_to}{Optional numeric. Force \code{from}/\code{to} range for \code{density()}.}
 

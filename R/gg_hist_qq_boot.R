@@ -66,7 +66,7 @@
 #' @param bar_fill,bar_color Histogram fill/border colors. Defaults `"#5DADE233"` / `"#1B4F72"`.
 #' @param enforce_serif Logical. Use serif base family in the theme. Default `TRUE`.
 #' @param theme_override Optional `ggplot2::theme()` added on top of base theme.
-#' @param dens_adjust Numeric ≥ 0. Bandwidth adjust for `stats::density()`. Default `1`.
+#' @param dens_adjust Numeric >= 0. Bandwidth adjust for `stats::density()`. Default `1`.
 #' @param dens_from,dens_to Optional numeric. Force `from`/`to` range for `density()`.
 #' @param show_boot_mean Logical. Draw **bootstrap mean** vertical line. Default `TRUE`.
 #' @param point_color Color for the **point estimate** line. Default `"#000000"`.
@@ -371,7 +371,7 @@ gg_hist_qq_boot <- function(object,
 #'
 #' @param object A bootstrap result object of class
 #'   `"sbt_std_boot"` or `"sbt_ustd_boot"`.
-#' @param params Character vector of parameter names to plot (≥ 2).
+#' @param params Character vector of parameter names to plot ( >= 2).
 #' @param standardized Logical; whether to use standardized estimates.
 #' @param title Plot title.
 #' @param point_size,point_alpha,point_color Aesthetics for points in lower panels.
